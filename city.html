@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The City</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-input: #1a1a24;
+            --gold: #FFD700;
+            --gold-dim: #aa8822;
+            --gold-glow: rgba(255, 215, 0, 0.15);
+            --text-primary: #e8e8e8;
+            --text-secondary: #888;
+            --text-dim: #555;
+            --red: #ff4444;
+            --blue: #4a9eff;
+            --purple: #aa44aa;
+            --green: #44aa44;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* THE ABZU BREATH - Gold variant for The City */
+        @keyframes abzuGold {
+            0% { background: radial-gradient(circle at center, #1a1508 0%, #000000 100%); }
+            50% { background: radial-gradient(circle at center, #2a2510 15%, #0a0a0f 100%); }
+            100% { background: radial-gradient(circle at center, #1a1508 0%, #000000 100%); }
+        }
+        
+        body.abzu-gold {
+            animation: abzuGold 4s infinite ease-in-out;
+        }
+
+        /* THE SAMARITAN PULSE */
+        @keyframes samaritanPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+            10% { transform: scale(1.02); box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
+            20% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 215, 0, 0.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-icon { animation: samaritanPulse 1.5s infinite; }
+
+        /* CITY GATE STATES */
+        .city-locked {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.8s ease;
+        }
+        
+        .city-unlocked {
+            filter: none;
+            pointer-events: auto;
+            animation: cityReveal 1s ease;
+        }
+        
+        @keyframes cityReveal {
+            0% { opacity: 0; filter: blur(8px); }
+            100% { opacity: 1; filter: none; }
+        }
+        
+        .gate-response {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .gate-response.success {
+            background: rgba(68, 170, 68, 0.1);
+            border: 1px solid #44aa44;
+            color: #66cc66;
+        }
+        
+        .gate-response.failure {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff6b6b;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #1a1a24;
+            margin-bottom: 2rem;
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        /* Header */
+        .city-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .city-header h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .city-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .resistor {
+            text-align: center;
+            color: var(--gold-dim);
+            font-family: monospace;
+            margin: 1.5rem 0;
+            opacity: 0.5;
+        }
+
+        /* The Three Laws */
+        .laws-section {
+            margin-bottom: 3rem;
+        }
+
+        .law {
+            background: var(--bg-card);
+            border-left: 3px solid var(--gold-dim);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .law-name {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            margin-bottom: 0.3rem;
+        }
+
+        .law-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Entry Form */
+        .entry-form {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .step-dot.complete {
+            background: var(--gold-dim);
+        }
+
+        .step-question {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-context {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Dialect Cards */
+        .dialect-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dialect-card {
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .dialect-card:hover {
+            border-color: var(--gold-dim);
+        }
+
+        .dialect-card.selected {
+            border-color: var(--gold);
+            background: var(--gold-glow);
+        }
+
+        .dialect-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dialect-name {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
+        }
+
+        .dialect-desc {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 1.8rem;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--gold);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-subtle {
+            border-color: var(--text-dim);
+            color: var(--text-secondary);
+        }
+
+        .btn-subtle:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .btn-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-nav .btn {
+            flex: 1;
+        }
+
+        /* Circuit Breaker */
+        .circuit-breaker {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-top: 1px solid #1a1a24;
+        }
+
+        .circuit-breaker p {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .circuit-breaker a {
+            color: var(--red);
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        .circuit-breaker a:hover {
+            text-decoration: underline;
+        }
+
+        /* The Forge */
+        .forge-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .forge-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .forge-header h2 {
+            font-size: 1.3rem;
+            color: var(--gold);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .forge-header p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* Fold One */
+        .fold-step {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--text-dim);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .fold-step.active {
+            border-left-color: var(--gold);
+            opacity: 1;
+        }
+
+        .fold-step.complete {
+            border-left-color: var(--green);
+            opacity: 0.8;
+        }
+
+        .fold-number {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .fold-question {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .surge-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .surge-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .surge-btn:hover {
+            border-color: var(--gold-dim);
+        }
+
+        .surge-btn.selected {
+            border-color: var(--gold);
+            background: var(--gold-glow);
+        }
+
+        .surge-btn .label {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
+        }
+
+        .surge-btn .desc {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        /* Metaphor Engine */
+        .engine-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .engine-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .engine-header h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .engine-header p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .engine-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 1rem;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .engine-input:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+        }
+
+        .engine-output {
+            background: var(--bg-input);
+            border-left: 3px solid var(--gold);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .engine-output.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .engine-output .dialect-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .engine-output .translation {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1a1a24;
+            text-align: center;
+        }
+
+        .footer-nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--gold);
+        }
+
+        .footer-truth {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="abzu-gold">
+
+    <!-- City Gate Audio -->
+    <audio id="cityAudio" src="between-the-ticks.mp3" preload="auto"></audio>
+
+    <div class="container">
+
+        <nav>
+            <a href="index.html">← Void Card</a>
+            <a href="village.html">Village →</a>
+        </nav>
+
+        <header class="city-header">
+            <h1>THE CITY</h1>
+            <p class="subtitle">You survived the Void. Now you build.</p>
+            <div class="resistor">—/\/\/\—</div>
+        </header>
+
+        <!-- The Three Laws -->
+        <section class="laws-section">
+            <div class="law">
+                <p class="law-name">LAW ONE: THE OPEN HAND</p>
+                <p class="law-text">Radical transparency is the foundation. You can't build a house on a lie.</p>
+            </div>
+            <div class="law">
+                <p class="law-name">LAW TWO: KINETIC WARFARE</p>
+                <p class="law-text">Love is not a feeling here. Love is action against isolation.</p>
+            </div>
+            <div class="law">
+                <p class="law-name">LAW THREE: THE 480V RULE</p>
+                <p class="law-text">High-voltage people don't need to lower their intensity. They need insulation.</p>
+            </div>
+        </section>
+
+        <!-- THE CITY GATE -->
+        <section class="gate-section" id="cityGate">
+            <div class="entry-form">
+                <p class="step-question" style="text-align: center; margin-bottom: 0.5rem;">THE GATE</p>
+                <p class="step-context" style="text-align: center; margin-bottom: 1.5rem;">
+                    The City is a Closed Circuit. It requires a key to enter.
+                </p>
+                
+                <div style="background: var(--bg-input); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 3px solid var(--gold);">
+                    <p style="color: var(--gold); font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 0.5rem;">THE RIDDLE</p>
+                    <p style="color: var(--text-primary); font-style: italic; font-size: 1.1rem;">
+                        "What have you found in the dark that has enough weight to hold the light?"
+                    </p>
+                </div>
+                
+                <input type="text" class="form-input" id="gateInput" placeholder="Your answer..." style="text-align: center; height: auto; min-height: unset;">
+                <button class="btn btn-block" onclick="submitGateAnswer()">ENTER THE CITY</button>
+                
+                <div id="gateResponse" class="gate-response" style="display: none;"></div>
+            </div>
+        </section>
+
+        <!-- Entry Form (Initially locked) -->
+        <div class="city-locked" id="cityContent">
+            <div class="entry-form">
+                <div class="step-indicator">
+                    <div class="step-dot active" id="dot1"></div>
+                    <div class="step-dot" id="dot2"></div>
+                    <div class="step-dot" id="dot3"></div>
+                    <div class="step-dot" id="dot4"></div>
+                </div>
+
+                <!-- Step 1: Identity -->
+                <div class="form-step active" id="step1">
+                    <p class="step-question">Who are you when you're not in crisis?</p>
+                    <p class="step-context">Not your diagnosis. Not your worst day. What do you actually do?</p>
+                    <textarea class="form-input" id="identityInput" rows="3" placeholder="I build... / I protect... / I observe..."></textarea>
+                    <button class="btn btn-block" onclick="nextStep(1)">CONTINUE →</button>
+                </div>
+
+                <!-- Step 2: Dialect -->
+                <div class="form-step" id="step2">
+                    <p class="step-question">How do you think when shit gets bad?</p>
+                    <p class="step-context">Pick the one that sounds like your internal monologue.</p>
+                    <div class="dialect-grid">
+                        <div class="dialect-card" onclick="selectDialect('mechanic', this)">
+                            <div class="dialect-icon">🔧</div>
+                            <div class="dialect-name">MECHANIC</div>
+                            <div class="dialect-desc">Problems are broken engines. Solutions are repairs.</div>
+                        </div>
+                        <div class="dialect-card" onclick="selectDialect('abyss', this)">
+                            <div class="dialect-icon">🌊</div>
+                            <div class="dialect-name">ABYSS</div>
+                            <div class="dialect-desc">You've seen the bottom. Darkness is familiar.</div>
+                        </div>
+                        <div class="dialect-card" onclick="selectDialect('operator', this)">
+                            <div class="dialect-icon">📡</div>
+                            <div class="dialect-name">OPERATOR</div>
+                            <div class="dialect-desc">Emotions are data. Crisis is noise in the signal.</div>
+                        </div>
+                        <div class="dialect-card" onclick="selectDialect('electric', this)">
+                            <div class="dialect-icon">⚡</div>
+                            <div class="dialect-name">ELECTRIC</div>
+                            <div class="dialect-desc">You run hot. The voltage is always high.</div>
+                        </div>
+                    </div>
+                    <div class="btn-nav">
+                        <button class="btn btn-subtle" onclick="prevStep(2)">← BACK</button>
+                        <button class="btn" onclick="nextStep(2)" id="step2Next" disabled>CONTINUE →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Open Hand -->
+                <div class="form-step" id="step3">
+                    <p class="step-question">What hard truth did you find in the trench?</p>
+                    <p class="step-context">Something that could save the next person. This becomes part of the foundation.</p>
+                    <textarea class="form-input" id="truthInput" rows="4" placeholder="The truth I found was..."></textarea>
+                    <div class="btn-nav">
+                        <button class="btn btn-subtle" onclick="prevStep(3)">← BACK</button>
+                        <button class="btn" onclick="nextStep(3)">CONTINUE →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Commitment -->
+                <div class="form-step" id="step4">
+                    <p class="step-question">Are you ready to stop being a patient and start being a builder?</p>
+                    <p class="step-context">This isn't about being healed. It's about building while you heal.</p>
+                    <div class="btn-nav" style="flex-direction: column; gap: 1rem;">
+                        <button class="btn btn-block" onclick="enterCity()">YES — I'M READY TO BUILD</button>
+                        <button class="btn btn-block btn-subtle" onclick="prevStep(4)">← NOT YET</button>
+                    </div>
+                </div>
+
+                <div class="circuit-breaker">
+                    <p>If the Void is pulling you back, that's okay.</p>
+                    <a href="index.html">Return to the Void Card →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Forge (shown after entry) -->
+        <div class="screen" id="forgeScreen">
+            
+            <div class="forge-section">
+                <div class="forge-header">
+                    <h2>THE FORGE</h2>
+                    <p>Where you turn pain into tools.</p>
+                </div>
+
+                <!-- Fold One Protocol -->
+                <div class="fold-step active" id="fold1">
+                    <p class="fold-number">FOLD ONE — STEP 1</p>
+                    <p class="fold-question">Identify the Surge. What kind of energy is this?</p>
+                    <div class="surge-buttons">
+                        <button class="surge-btn" onclick="selectSurge('ac', this)">
+                            <span class="label">AC SPIKE</span>
+                            <span class="desc">Emotion. Chaos. Heat.</span>
+                        </button>
+                        <button class="surge-btn" onclick="selectSurge('dc', this)">
+                            <span class="label">DC DROP</span>
+                            <span class="desc">Apathy. Gray. Cold.</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="fold-step" id="fold2">
+                    <p class="fold-number">FOLD ONE — STEP 2</p>
+                    <p class="fold-question">Apply Resistance. Give it a load.</p>
+                    <div id="resistanceDisplay"></div>
+                </div>
+
+                <div class="fold-step" id="fold3">
+                    <p class="fold-number">FOLD ONE — STEP 3</p>
+                    <p class="fold-question">Transmit. Signal = Survival.</p>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                        Tell one person your status. Even "I'm at 30 voltage" counts.
+                    </p>
+                    <a href="village.html" class="btn">GO TO THE VILLAGE →</a>
+                </div>
+            </div>
+
+            <!-- Metaphor Engine -->
+            <div class="engine-section">
+                <div class="engine-header">
+                    <h2>THE METAPHOR ENGINE</h2>
+                    <p>Type what you're carrying. It translates.</p>
+                </div>
+                
+                <textarea class="engine-input" id="engineInput" placeholder="What's the weight you're carrying right now?"></textarea>
+                <button class="btn btn-block" onclick="translateMetaphor()">TRANSLATE</button>
+                
+                <div class="engine-output" id="engineOutput">
+                    <p class="dialect-label" id="outputDialect"></p>
+                    <p class="translation" id="outputText"></p>
+                </div>
+            </div>
+
+        </div>
+        
+        </div><!-- End city-locked content -->
+
+        <!-- Footer -->
+        <div class="footer-nav">
+            <a href="index.html">Void Card</a>
+            <a href="village.html">Village</a>
+            <a href="heart.html">Heart</a>
+        </div>
+
+        <p class="footer-truth">"The energy that fuels you lives in me, and vice versa."</p>
+
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedDialect = '';
+        let selectedSurge = '';
+        let citizenData = {};
+
+        // Check if already entered
+        document.addEventListener('DOMContentLoaded', () => {
+            const stored = localStorage.getItem('cityEntry');
+            if (stored) {
+                citizenData = JSON.parse(stored);
+                selectedDialect = citizenData.dialect || 'mechanic';
+                document.getElementById('entryScreen').classList.remove('active');
+                document.getElementById('forgeScreen').classList.add('active');
+            }
+        });
+
+        function nextStep(from) {
+            if (from === 1) {
+                citizenData.identity = document.getElementById('identityInput').value;
+            } else if (from === 2 && !selectedDialect) {
+                return;
+            } else if (from === 3) {
+                citizenData.truth = document.getElementById('truthInput').value;
+            }
+
+            document.getElementById('step' + from).classList.remove('active');
+            document.getElementById('dot' + from).classList.remove('active');
+            document.getElementById('dot' + from).classList.add('complete');
+            
+            currentStep = from + 1;
+            document.getElementById('step' + currentStep).classList.add('active');
+            document.getElementById('dot' + currentStep).classList.add('active');
+        }
+
+        function prevStep(to) {
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('dot' + currentStep).classList.remove('active');
+            
+            currentStep = to - 1;
+            document.getElementById('step' + currentStep).classList.add('active');
+            document.getElementById('dot' + currentStep).classList.add('active');
+            document.getElementById('dot' + currentStep).classList.remove('complete');
+        }
+
+        function selectDialect(dialect, element) {
+            selectedDialect = dialect;
+            citizenData.dialect = dialect;
+            
+            document.querySelectorAll('.dialect-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('step2Next').disabled = false;
+        }
+
+        function enterCity() {
+            citizenData.enteredAt = new Date().toISOString();
+            localStorage.setItem('cityEntry', JSON.stringify(citizenData));
+            
+            document.getElementById('entryScreen').classList.remove('active');
+            document.getElementById('forgeScreen').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function selectSurge(type, element) {
+            selectedSurge = type;
+            
+            document.querySelectorAll('.surge-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            
+            // Activate step 2
+            document.getElementById('fold1').classList.remove('active');
+            document.getElementById('fold1').classList.add('complete');
+            document.getElementById('fold2').classList.add('active');
+            
+            // Show resistance options
+            const display = document.getElementById('resistanceDisplay');
+            if (type === 'ac') {
+                display.innerHTML = `
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                        <strong style="color: var(--gold);">AC SPIKE</strong> — Don't fight the feeling. Give it a load.
+                    </p>
+                    <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.7;">
+                        If RAGE → WORK. Move something heavy.<br>
+                        If PANIC → COLD. Ice on wrists. Shock the system.<br>
+                        If SPIRAL → GROUND. 5 things you see. Name them out loud.
+                    </p>
+                    <button class="btn" style="margin-top: 1rem;" onclick="completeResistance()">I DID IT →</button>
+                `;
+            } else {
+                display.innerHTML = `
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">
+                        <strong style="color: var(--gold);">DC DROP</strong> — You need a spark. Something small.
+                    </p>
+                    <p style="color: var(--text-dim); font-size: 0.85rem; line-height: 1.7;">
+                        If NUMB → SHOCK. Cold water. Loud music. Something that registers.<br>
+                        If EMPTY → RECEIVE. Let someone give you something. Even a text.<br>
+                        If GRAY → CREATE. Make one thing. Even a sentence.
+                    </p>
+                    <button class="btn" style="margin-top: 1rem;" onclick="completeResistance()">I DID IT →</button>
+                `;
+            }
+        }
+
+        function completeResistance() {
+            document.getElementById('fold2').classList.remove('active');
+            document.getElementById('fold2').classList.add('complete');
+            document.getElementById('fold3').classList.add('active');
+        }
+
+        // Metaphor Engine
+        const translations = {
+            mechanic: {
+                prefix: "MECHANIC DIALECT:",
+                patterns: [
+                    { keywords: ['kids', 'children', 'custody', 'losing'], response: "The seals are leaking and you're losing compression. If you don't rebuild the block now, the whole machine is scrap. First turn of the wrench: document everything. Paper trail is your warranty." },
+                    { keywords: ['drink', 'drinking', 'alcohol', 'addiction'], response: "The fuel mixture is wrong. You're running rich and flooding the engine. Can't fix it while it's running — need to shut it down, drain the tank, and rebuild with clean fuel." },
+                    { keywords: ['relationship', 'partner', 'marriage', 'divorce'], response: "Two engines trying to run on the same fuel line. Either you sync the timing or you both seize. Time to check if the coupling is salvageable or if you need to run separate systems." },
+                    { keywords: ['work', 'job', 'boss', 'fired'], response: "The shop is toxic. Carbon monoxide in the air and you're the only one who notices because everyone else is already brain-damaged. Get out of the garage. New shop, new air." },
+                    { keywords: ['tired', 'exhausted', 'can\'t'], response: "Running on empty doesn't mean you're weak — it means you've been redlining for too long without a pit stop. Pull over. Coolant. Oil check. You can't finish the race if the engine seizes." }
+                ],
+                default: "The system is under load. Can't diagnose while it's running hot. Step one: idle the engine. Step two: check the gauges. What's actually redlining right now?"
+            },
+            abyss: {
+                prefix: "ABYSS DIALECT:",
+                patterns: [
+                    { keywords: ['kids', 'children', 'custody', 'losing'], response: "You've been to the bottom before. This isn't the bottom — this is the current trying to pull you back down. The kids are your surface light. Swim toward them, not the dark." },
+                    { keywords: ['drink', 'drinking', 'alcohol', 'addiction'], response: "The abyss has a lot of entrances. This one is disguised as relief. You know what's down there. You've seen it. Choose to surface, even when the dark feels easier." },
+                    { keywords: ['relationship', 'partner', 'marriage', 'divorce'], response: "Two people drowning can't save each other. One has to find ground first. Be the one who surfaces. Then decide if you throw them a line or let the current take them." },
+                    { keywords: ['work', 'job', 'boss', 'fired'], response: "The depths don't care about your job title. Neither does the surface. What matters is whether you're swimming up or sinking down. This is just water — it can be moved through." },
+                    { keywords: ['tired', 'exhausted', 'can\'t'], response: "The pressure at depth is crushing. That's real. But you've survived pressure before. Float. Don't swim. Just float until the current changes. It always changes." }
+                ],
+                default: "You've been deeper than this. You know what the real bottom looks like. This isn't it. This is just dark water, and dark water can be navigated."
+            },
+            operator: {
+                prefix: "OPERATOR DIALECT:",
+                patterns: [
+                    { keywords: ['kids', 'children', 'custody', 'losing'], response: "Signal integrity is compromised. Too much noise on the line. Filter the inputs: legal documentation, witnessed interactions, timestamped records. Build a signal that can't be jammed." },
+                    { keywords: ['drink', 'drinking', 'alcohol', 'addiction'], response: "The system has a feedback loop that's amplifying noise instead of signal. Identify the trigger frequency. Isolate it. Attenuate before it saturates the whole network." },
+                    { keywords: ['relationship', 'partner', 'marriage', 'divorce'], response: "Two transceivers on different frequencies. Either recalibrate to match or accept signal loss. The question is whether the bandwidth is worth the interference." },
+                    { keywords: ['work', 'job', 'boss', 'fired'], response: "The network is dropping packets. Not your fault — bad infrastructure. Route around the damage. Find nodes that actually transmit. Build redundancy." },
+                    { keywords: ['tired', 'exhausted', 'can\'t'], response: "Buffer overflow. Too many processes, not enough cycles. Time to kill background tasks. What's actually mission-critical right now? Everything else goes to sleep mode." }
+                ],
+                default: "Lot of noise in the signal right now. Hard to parse the actual data from the interference. Let's isolate: what's the primary transmission you need to focus on?"
+            },
+            electric: {
+                prefix: "ELECTRIC DIALECT:",
+                patterns: [
+                    { keywords: ['kids', 'children', 'custody', 'losing'], response: "Your voltage is spiking because the most important circuit is threatened. That energy is CORRECT. Channel it into the fight, not into the burnout. Controlled discharge, not explosion." },
+                    { keywords: ['drink', 'drinking', 'alcohol', 'addiction'], response: "You're using the wrong resistance. Alcohol doesn't ground the voltage — it just delays the discharge until it's uncontrollable. Find a real ground wire. Movement. Creation. Something that can handle the current." },
+                    { keywords: ['relationship', 'partner', 'marriage', 'divorce'], response: "Two high-voltage lines too close together. Either one of you insulates or you both arc and burn. The spark between you is real — the question is whether it powers something or just destroys." },
+                    { keywords: ['work', 'job', 'boss', 'fired'], response: "They can't handle your voltage. That's their problem, not your flaw. Find a system rated for your output. Stop trying to fit into circuits designed for lower current." },
+                    { keywords: ['tired', 'exhausted', 'can\'t'], response: "You've been at 100% output with no recovery cycle. The capacitors are drained. You're not weak — you're depleted. Charge before you try to power anything else." }
+                ],
+                default: "The voltage is high. That's not a problem — that's who you are. The problem is finding circuits that can handle what you carry. Where's the energy trying to go right now?"
+            }
+        };
+
+        function translateMetaphor() {
+            const input = document.getElementById('engineInput').value.toLowerCase();
+            if (!input.trim()) return;
+
+            const dialect = selectedDialect || 'mechanic';
+            const dialectData = translations[dialect];
+            
+            let response = dialectData.default;
+            
+            for (const pattern of dialectData.patterns) {
+                for (const keyword of pattern.keywords) {
+                    if (input.includes(keyword)) {
+                        response = pattern.response;
+                        break;
+                    }
+                }
+                if (response !== dialectData.default) break;
+            }
+
+            // Crisis detection
+            const crisisKeywords = ['suicide', 'kill myself', 'end it', 'don\'t want to live', 'better off dead', 'no reason to live'];
+            for (const keyword of crisisKeywords) {
+                if (input.includes(keyword)) {
+                    response = "⚠️ PRIORITY SIGNAL DETECTED ⚠️\n\nThis is beyond the Forge. This is the Void Card territory.\n\n988 Suicide & Crisis Lifeline — call or text.\n\nThe light stays on. But right now, you need a direct line, not a translation.\n\nWe'll be here when you come back.";
+                    break;
+                }
+            }
+
+            document.getElementById('outputDialect').textContent = dialectData.prefix;
+            document.getElementById('outputText').textContent = response;
+            document.getElementById('engineOutput').classList.add('show');
+        }
+
+        // ===========================================================
+        // CITY GATE LOGIC - The Closed Circuit
+        // ===========================================================
+        
+        const CITY_GATE = {
+            validKeys: ['wisdom', 'growth', 'love', 'self-respect', 'understanding', 'truth',
+                        'hope', 'strength', 'purpose', 'faith', 'courage', 'peace', 'myself',
+                        'self', 'acceptance', 'resilience', 'gratitude', 'forgiveness'],
+            failureResponse: "You are looking at the clouds. The current is in the wire.",
+            successResponse: "The gate opens. Welcome to The City."
+        };
+
+        function submitGateAnswer() {
+            const input = document.getElementById('gateInput');
+            const responseDiv = document.getElementById('gateResponse');
+            
+            if (!input || !responseDiv) return;
+            
+            const answer = input.value.toLowerCase().trim();
+            
+            if (!answer) {
+                responseDiv.textContent = "The gate requires an answer.";
+                responseDiv.className = 'gate-response failure';
+                responseDiv.style.display = 'block';
+                return;
+            }
+            
+            let valid = false;
+            for (const key of CITY_GATE.validKeys) {
+                if (answer.includes(key)) {
+                    valid = true;
+                    break;
+                }
+            }
+            
+            if (valid) {
+                responseDiv.textContent = CITY_GATE.successResponse;
+                responseDiv.className = 'gate-response success';
+                responseDiv.style.display = 'block';
+                
+                // Play audio and unlock city after delay
+                setTimeout(() => {
+                    unlockCity();
+                }, 1500);
+            } else {
+                responseDiv.textContent = CITY_GATE.failureResponse;
+                responseDiv.className = 'gate-response failure';
+                responseDiv.style.display = 'block';
+            }
+        }
+
+        function unlockCity() {
+            // Hide the gate section
+            const gateSection = document.getElementById('cityGate');
+            if (gateSection) {
+                gateSection.style.display = 'none';
+            }
+            
+            // Unlock the city content
+            const cityContent = document.getElementById('cityContent');
+            if (cityContent) {
+                cityContent.classList.remove('city-locked');
+                cityContent.classList.add('city-unlocked');
+            }
+            
+            // Play the audio
+            const audio = document.getElementById('cityAudio');
+            if (audio) {
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Audio autoplay blocked:', e));
+            }
+            
+            // Trigger pulse animation on icons
+            document.querySelectorAll('.pulse-icon').forEach(el => {
+                el.classList.add('pulse-active');
+            });
+            
+            // Store entry
+            localStorage.setItem('cityEntry', JSON.stringify({
+                enteredAt: new Date().toISOString(),
+                method: 'gate'
+            }));
+        }
+
+        // Check if user has already entered
+        window.addEventListener('DOMContentLoaded', function() {
+            const cityEntry = localStorage.getItem('cityEntry');
+            if (cityEntry) {
+                // Auto-unlock for returning citizens
+                unlockCity();
+            }
+            
+            // Enter key support for gate input
+            const gateInput = document.getElementById('gateInput');
+            if (gateInput) {
+                gateInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        submitGateAnswer();
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

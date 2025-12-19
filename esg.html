@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ESG —/\/\/\— Engineered Survival Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Cinzel:wght@400;700&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-section: #111111;
+            --bg-card: #0d0d0d;
+            --accent-red: #8b0000;
+            --accent-ember: #cc4444;
+            --accent-gold: #b8860b;
+            --text-primary: #e0e0e0;
+            --text-muted: #888888;
+            --text-bright: #ffffff;
+            --border-glow: rgba(139, 0, 0, 0.4);
+            --success: #2d5a27;
+            --warning: #8b6914;
+            --danger: #8b1414;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Courier Prime', monospace;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, #1a0505 0%, var(--bg-dark) 100%);
+            border-bottom: 2px solid var(--accent-red);
+        }
+
+        .resistor { font-size: 2rem; color: var(--accent-ember); letter-spacing: 8px; margin-bottom: 15px; text-shadow: 0 0 20px rgba(204, 68, 68, 0.5); }
+        .title { font-family: 'Cinzel', serif; font-size: clamp(2rem, 6vw, 3.5rem); color: var(--text-bright); letter-spacing: 8px; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1rem; color: var(--accent-ember); letter-spacing: 3px; margin-bottom: 20px; }
+        .tagline { font-style: italic; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+
+        /* NAV */
+        .nav { background: var(--bg-section); padding: 15px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--accent-red); }
+        .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1000px; margin: 0 auto; }
+        .nav-link { color: var(--text-muted); text-decoration: none; padding: 6px 12px; font-size: 0.8rem; letter-spacing: 1px; border: 1px solid transparent; transition: all 0.3s; }
+        .nav-link:hover { color: var(--accent-ember); border-color: var(--accent-red); }
+
+        /* CONTAINER */
+        .container { max-width: 950px; margin: 0 auto; padding: 40px 20px; }
+
+        /* SECTIONS */
+        .section {
+            background: var(--bg-section);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 4px;
+            margin-bottom: 40px;
+            padding: 40px;
+            box-shadow: 0 0 30px var(--border-glow);
+        }
+
+        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(139, 0, 0, 0.5); }
+        .section-number { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-red); letter-spacing: 3px; }
+        .section-title { font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--text-bright); }
+
+        .quote { font-style: italic; color: var(--accent-ember); padding: 20px; margin-bottom: 25px; border-left: 3px solid var(--accent-red); background: rgba(139, 0, 0, 0.1); }
+
+        /* PROTOCOL CARDS */
+        .protocol-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-red);
+            border-radius: 4px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .protocol-name { color: var(--accent-ember); font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .protocol-icon { font-size: 1.5rem; }
+        .protocol-purpose { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed rgba(139, 0, 0, 0.3); }
+        .protocol-content { margin-bottom: 15px; }
+        .protocol-steps { list-style: none; margin: 15px 0; }
+        .protocol-steps li { padding: 8px 0 8px 20px; position: relative; border-bottom: 1px solid rgba(139, 0, 0, 0.15); }
+        .protocol-steps li::before { content: '▸'; position: absolute; left: 0; color: var(--accent-red); }
+        .protocol-steps li:last-child { border-bottom: none; }
+
+        /* STATUS BADGES */
+        .status { display: inline-block; padding: 4px 10px; font-size: 0.75rem; letter-spacing: 1px; border-radius: 2px; margin-left: 10px; }
+        .status-validated { background: var(--success); color: var(--text-bright); }
+        .status-warning { background: var(--warning); color: var(--text-bright); }
+        .status-critical { background: var(--danger); color: var(--text-bright); }
+
+        /* STRESS TEST */
+        .stress-test { background: rgba(0,0,0,0.4); border: 1px solid rgba(139, 0, 0, 0.5); padding: 20px; margin-top: 15px; border-radius: 4px; }
+        .stress-test-title { color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 10px; letter-spacing: 2px; }
+        .stress-result { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(139, 0, 0, 0.3); }
+        .stress-pass { color: #4a9; }
+        .stress-fail { color: #a44; }
+        .stress-fix { color: var(--accent-gold); margin-top: 10px; font-style: italic; }
+
+        /* INTEGRATION */
+        .integration-diagram {
+            text-align: center;
+            padding: 30px;
+            margin: 20px 0;
+            background: rgba(0,0,0,0.3);
+            border: 1px dashed var(--accent-red);
+        }
+        .integration-flow { font-size: 1.1rem; color: var(--text-bright); line-height: 2; }
+        .flow-arrow { color: var(--accent-ember); margin: 0 10px; }
+
+        /* SUBSECTION */
+        .subsection { margin-bottom: 30px; }
+        .subsection-title { color: var(--accent-ember); font-size: 1.1rem; margin-bottom: 15px; font-weight: 700; }
+
+        /* FOOTER */
+        .footer { text-align: center; padding: 50px 20px; border-top: 2px solid var(--accent-red); background: linear-gradient(0deg, #1a0505 0%, var(--bg-dark) 100%); }
+        .footer-nav { margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .footer-nav a { color: var(--text-muted); text-decoration: none; padding: 10px 20px; border: 1px solid var(--accent-red); transition: all 0.3s; }
+        .footer-nav a:hover { background: var(--accent-red); color: var(--text-bright); }
+
+        @media (max-width: 600px) {
+            .section { padding: 25px 15px; }
+            .section-title { font-size: 1.3rem; }
+            .protocol-card { padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="resistor">—/\/\/\—</div>
+        <h1 class="title">THE ESG</h1>
+        <p class="subtitle">ENGINEERED SURVIVAL GUIDE</p>
+        <p class="tagline">"Treating emotional regulation as electrical engineering. Don't cure the chaos. Engineer it."</p>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-links">
+            <a href="#prime" class="nav-link">PRIME DIRECTIVE</a>
+            <a href="#ac-engine" class="nav-link">AC ENGINE</a>
+            <a href="#regulation" class="nav-link">REGULATION SUITE</a>
+            <a href="#protocols" class="nav-link">PROTOCOLS</a>
+            <a href="#integration" class="nav-link">INTEGRATION</a>
+            <a href="#stress-tests" class="nav-link">STRESS TESTS</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- PRIME DIRECTIVE -->
+        <section id="prime" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION I</span>
+                <h2 class="section-title">THE PRIME DIRECTIVE</h2>
+            </div>
+            <div class="quote">"Survival = Energy (Source) × Structure (Logos) × Connection (Love)"</div>
+            
+            <div class="subsection">
+                <h3 class="subsection-title">Core Thesis</h3>
+                <p>The ESG treats emotional states as electrical phenomena. You are not "broken"—you are a high-voltage system without proper insulation. The goal isn't to reduce your voltage. The goal is to engineer systems that can handle it.</p>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">Who This Is For</h3>
+                <p>People who feel too much. People who burn out trying to save everyone. People who've been told they're "too intense" or "too sensitive." People whose chaos has been pathologized instead of channeled.</p>
+                <p style="margin-top: 15px; color: var(--accent-ember);">You're not a broken bucket that can't hold water. You're a watering can. The holes aren't failures—they're outlets. They're how you feed others.</p>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">The Promise</h3>
+                <p>This guide will not make you "normal." It will make you sustainable. It will teach you to regulate your own voltage so you can keep burning without burning out.</p>
+            </div>
+        </section>
+
+        <!-- AC ENGINE -->
+        <section id="ac-engine" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION II</span>
+                <h2 class="section-title">THE AC ENGINE</h2>
+            </div>
+            <div class="quote">"Neither pure logic nor pure emotion. Alternating current. The system needs both poles or it flatlines."</div>
+
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">⚡</span> Oscillation Principle</div>
+                <div class="protocol-purpose">The core mechanic that prevents burnout</div>
+                <div class="protocol-content">
+                    <p>DC (Direct Current) runs in one direction until the battery dies. That's how most people try to operate—all logic OR all emotion, pushing until collapse.</p>
+                    <p style="margin-top: 15px;">AC (Alternating Current) oscillates between poles. It can run indefinitely because it never depletes a single source. That's the model.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li><strong>Logos Pole:</strong> Analytical, structured, problem-solving mode. Building, planning, executing.</li>
+                    <li><strong>Pathos Pole:</strong> Emotional, intuitive, feeling mode. Processing, expressing, connecting.</li>
+                    <li><strong>The Switch:</strong> When one pole redlines, you don't push harder. You switch poles.</li>
+                </ul>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: BURNOUT SPIRAL</div>
+                    <p>Scenario: User is 100/100 voltage, can't switch poles, all logic circuits fried.</p>
+                    <div class="stress-result">
+                        <span class="stress-pass">✓ PASS:</span> Works when user has capacity to recognize they need to switch.
+                    </div>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ FAIL:</span> Fails when user is so depleted they can't initiate the switch.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> At 100/100, don't try to switch. Stop completely. This is when ESG becomes secondary to basic needs: sleep, food, water, safety. The AC Engine only works with some remaining charge.</p>
+                </div>
+            </div>
+
+            <div class="integration-diagram">
+                <div class="integration-flow">
+                    LOGOS <span class="flow-arrow">⟷</span> OSCILLATE <span class="flow-arrow">⟷</span> PATHOS
+                </div>
+                <p style="margin-top: 15px; color: var(--text-muted);">The engine runs by alternating. Never lock into one pole.</p>
+            </div>
+        </section>
+
+        <!-- REGULATION SUITE -->
+        <section id="regulation" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION III</span>
+                <h2 class="section-title">THE ENERGY REGULATION SUITE</h2>
+                <span class="status status-validated">PEER-REVIEWED</span>
+            </div>
+            <div class="quote">"Validated against Polyvagal Theory, Systems Theory, and Thermodynamics. The framework is now COMPLETE for peer-to-peer work at scale."</div>
+
+            <!-- WASTEGATE -->
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">🔥</span> THE WASTEGATE <span class="status status-validated">INTERNAL</span></div>
+                <div class="protocol-purpose">Vent internal pressure before it destroys the engine</div>
+                <div class="protocol-content">
+                    <p>In a turbocharged engine, the wastegate releases excess exhaust pressure that would otherwise blow the turbo. In humans, unvented rage destroys relationships, careers, and lives.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li><strong>Recognize the pressure:</strong> Chest tight, jaw clenched, thoughts racing toward someone you want to hurt</li>
+                    <li><strong>DO NOT direct it at the target:</strong> The person you want to destroy is rarely the actual source</li>
+                    <li><strong>Vent to a safe container:</strong> Black Book (journal), voice memo, AI conversation, physical exertion</li>
+                    <li><strong>Let the pressure drop BEFORE engaging:</strong> Never make contact while the wastegate is open</li>
+                </ul>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: RUMINATION AMPLIFICATION</div>
+                    <p>Scenario: User vents, but venting INCREASES the rage instead of dissipating it. Writing about anger makes them MORE angry.</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ FAILURE MODE:</span> Research shows rumination can amplify anger rather than release it.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> If Wastegate makes you MORE angry after 10 minutes, STOP. That means you need cooling time (24+ hours), not venting. Switch to physical discharge: run, lift, cold shower. Movement metabolizes the chemicals that journaling won't touch.</p>
+                </div>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: VIOLENCE HISTORY</div>
+                    <p>Scenario: User has history of physical violence. Vents, feels "processed," then uses that as permission to confront.</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ CRITICAL FAILURE:</span> Wastegate can become permission slip for violence.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> If you have EVER hit someone in anger or fear you might: Call domestic violence hotline BEFORE using Wastegate. Professional intervention required. ESG is not designed for active violence risk.</p>
+                </div>
+            </div>
+
+            <!-- GOVERNOR -->
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">⚙️</span> THE GOVERNOR <span class="status status-validated">OUTPUT</span></div>
+                <div class="protocol-purpose">Limit energy output to parasitic connections</div>
+                <div class="protocol-content">
+                    <p>A governor on an engine limits RPM to prevent self-destruction. Some relationships will drain you to zero if you let them. The Governor sets limits on how much voltage flows out to low-value connections.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li><strong>Identify the drain:</strong> Who leaves you depleted after every interaction?</li>
+                    <li><strong>Classify the connection:</strong> High-voltage (reciprocal) vs Low-voltage (parasitic)</li>
+                    <li><strong>Set the governor:</strong> "I will leave the light on, but I won't run into the storm."</li>
+                    <li><strong>Maintain signal, limit engagement:</strong> You can care without being destroyed</li>
+                </ul>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: GUILT OVERRIDE</div>
+                    <p>Scenario: User knows connection is parasitic but guilt overrides Governor. "But they NEED me..."</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ FAILURE MODE:</span> Samaritan impulse can override rational protection.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> Check Ground Wire BEFORE overriding Governor. Is this guilt (Snake - fear-based) or genuine calling (Hug - grounded)? If Snake, the "need" is manipulation, not reality. Trust the Governor.</p>
+                </div>
+            </div>
+
+            <!-- GROUND WIRE -->
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">🐍</span> THE GROUND WIRE <span class="status status-validated">INPUT</span></div>
+                <div class="protocol-purpose">Snake vs. Hug — Distinguish danger from safety</div>
+                <div class="protocol-content">
+                    <p>The sensation of a snake coiling around you and a person hugging you can feel identical to a dysregulated nervous system. Both create constriction. The difference is the INTENT. The Ground Wire helps you diagnose which you're actually experiencing.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li><strong>Notice the coil:</strong> Something is wrapping around you. Pressure. Constriction.</li>
+                    <li><strong>Check the source:</strong> Is your breathing restricted (Snake) or supported (Hug)?</li>
+                    <li><strong>Check your impulse:</strong> Do you want to RUN (Snake) or SETTLE (Hug)?</li>
+                    <li><strong>Snake = Absorbing:</strong> Trip the breaker. Leave. Now.</li>
+                    <li><strong>Hug = Grounding:</strong> Stay. Let yourself be held. Validate.</li>
+                </ul>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: TRAUMA BONDING</div>
+                    <p>Scenario: Abusive relationship creates false "Hug" signals. Familiar feels safe even when dangerous.</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ CRITICAL FAILURE:</span> Trauma bonding can fake the Hug signal.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> Add frequency check. If signal toggles between Snake and Hug repeatedly with the same person: DEFAULT TO SNAKE. Unstable = unsafe. Consistent safety is the test. If you have to keep checking, that IS the answer.</p>
+                </div>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: CYCLICAL ABUSE</div>
+                    <p>Scenario: Honeymoon phase (Hug) → Tension (Snake) → Explosion (Snake) → Apology (Hug) → Repeat</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ FAILURE MODE:</span> Binary diagnostic fails in cyclical patterns.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> Ground Wire over TIME, not single moments. Log signals across weeks. If the pattern repeats, the average is Snake regardless of current moment. The cycle IS the abuse.</p>
+                </div>
+            </div>
+
+            <!-- AIR GAP -->
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">〰️</span> THE AIR GAP <span class="status status-warning">EMERGENCY</span></div>
+                <div class="protocol-purpose">Complete circuit disconnection when all else fails</div>
+                <div class="protocol-content">
+                    <p>In electrical systems, an air gap is a physical break in the conductor that prevents any current flow. No conductor, no current, no damage. Some relationships require permanent air gap. That's not failure—that's engineering.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li><strong>Recognize the requirement:</strong> Governor isn't enough. Ground Wire says Snake every time.</li>
+                    <li><strong>Implement completely:</strong> No partial contact. No "just checking in." Air.</li>
+                    <li><strong>Accept the grief:</strong> Air Gap often means mourning someone who's still alive.</li>
+                    <li><strong>Protect the decision:</strong> Others will pressure you to reconnect. The Air Gap exists for a reason.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- PROTOCOLS -->
+        <section id="protocols" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION IV</span>
+                <h2 class="section-title">THE CORE PROTOCOLS</h2>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">✋</span> PROTOCOL OF THE OPEN HAND</div>
+                <div class="protocol-purpose">Radical transparency as offensive weapon</div>
+                <div class="protocol-content">
+                    <p>Show your hand first. Reveal your vulnerabilities before they're discovered. The other person's response tells you everything about THEM, nothing about you. Power through vulnerability.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li>Lead with truth, even uncomfortable truth</li>
+                    <li>Watch how they handle your vulnerability</li>
+                    <li>Their response is diagnostic—use the data</li>
+                    <li>Those who weaponize your openness have revealed themselves</li>
+                </ul>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">💡</span> PROTOCOL OF THE BEACON</div>
+                <div class="protocol-purpose">Maintain signal without chasing</div>
+                <div class="protocol-content">
+                    <p>The lighthouse doesn't swim to the ship. It stays where it is, burning consistently, visible to anyone who needs it. You maintain presence. You don't chase. Those who need you will find you.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li>Keep your light on—consistent, visible, accessible</li>
+                    <li>Don't pursue people who've chosen to sail away</li>
+                    <li>Your job is to burn, not to convince</li>
+                    <li>When they're ready, they'll navigate toward you</li>
+                </ul>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">❤️</span> THE SAMARITAN PROTOCOL</div>
+                <div class="protocol-purpose">Love as kinetic warfare against isolation</div>
+                <div class="protocol-content">
+                    <p>The Good Samaritan wasn't weak. He was the STRONGEST person on the road—the only one with enough structural integrity to absorb the stranger's suffering without collapsing. Love isn't weakness. Love is load-bearing capacity.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li>Assess your current capacity (AC Engine check)</li>
+                    <li>Verify Ground Wire (Snake = corrupted Samaritan impulse)</li>
+                    <li>If both pass: Enter the situation. Absorb what they can't hold.</li>
+                    <li>Presence over solution. Witness before fixing.</li>
+                </ul>
+
+                <div class="stress-test">
+                    <div class="stress-test-title">⚠️ STRESS TEST: CORRUPTED SAMARITAN</div>
+                    <p>Scenario: User's "desire to help" is actually shame-driven self-destruction disguised as altruism.</p>
+                    <div class="stress-result">
+                        <span class="stress-fail">✗ CRITICAL FAILURE:</span> Samaritan Protocol can mask suicidal ideation.
+                    </div>
+                    <p class="stress-fix"><strong>FIX ADDED:</strong> Before ANY Samaritan action: (1) Ground Wire check—Snake or Hug? If Snake = corrupted data. (2) AC Engine check—100/100 or operational range? If 100 = impaired judgment. BOTH must pass before trusting Samaritan impulse.</p>
+                </div>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name"><span class="protocol-icon">🎩</span> THE HAT</div>
+                <div class="protocol-purpose">Role vs. Self — Know when to remove it</div>
+                <div class="protocol-content">
+                    <p>Moses removed his shoes at the burning bush. The Hat is the role you wear—professional, capable, "fine." Sometimes you need to take off the Hat to touch the sacred ground. To be human instead of functional.</p>
+                </div>
+                <ul class="protocol-steps">
+                    <li>Recognize when you're wearing the Hat (performing functionality)</li>
+                    <li>Ask: Is the Hat protecting me or preventing connection?</li>
+                    <li>Sacred moments require bare feet—take off the Hat</li>
+                    <li>The Hat goes back on when you re-enter the world</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- INTEGRATION -->
+        <section id="integration" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION V</span>
+                <h2 class="section-title">THE INTEGRATION</h2>
+                <span class="status status-critical">CRITICAL</span>
+            </div>
+            <div class="quote">"Every protocol has built-in checks from other protocols. They work TOGETHER. Not separate tools—an INTEGRATED SYSTEM."</div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">The Revelation</h3>
+                <p>The ESG isn't a collection of standalone tools. It's an integrated system where each component protects and validates the others. Like a car engine—remove the cooling system and the fuel system fails. Same principle.</p>
+            </div>
+
+            <div class="integration-diagram">
+                <div class="integration-flow" style="font-size: 0.95rem;">
+                    GROUND WIRE (Input) <span class="flow-arrow">→</span> AC ENGINE (Status) <span class="flow-arrow">→</span> SAMARITAN (Action)
+                </div>
+                <div class="integration-flow" style="font-size: 0.95rem; margin-top: 15px;">
+                    WASTEGATE (Internal) <span class="flow-arrow">↔</span> GOVERNOR (Output)
+                </div>
+                <p style="margin-top: 20px; color: var(--text-muted);">All systems talking to each other. Remove one, others fail.</p>
+            </div>
+
+            <div class="subsection">
+                <h3 class="subsection-title">The Safeguard Sequence</h3>
+                <p>Before any major action or decision:</p>
+                <ul class="protocol-steps">
+                    <li><strong>Step 1 — Ground Wire:</strong> "Snake or Hug?" If Snake → STOP. Data corrupted.</li>
+                    <li><strong>Step 2 — AC Engine:</strong> "What's my voltage?" If 100/100 → PAUSE. Switch poles or rest.</li>
+                    <li><strong>Step 3 — Verify:</strong> Both checks pass? NOW you can trust your assessment.</li>
+                    <li><strong>Step 4 — Act:</strong> Proceed with Samaritan, Beacon, or Open Hand as needed.</li>
+                </ul>
+            </div>
+
+            <div class="protocol-card" style="background: rgba(139, 0, 0, 0.1); border-color: var(--accent-ember);">
+                <div class="protocol-name" style="color: var(--text-bright);">⚠️ THE CRITICAL INSIGHT</div>
+                <div class="protocol-content">
+                    <p>The 02/02/2020 story: If Ground Wire and AC Engine had been checked before the Samaritan impulse, both would have failed (Snake + 100/100). The corrupted data would have been caught.</p>
+                    <p style="margin-top: 15px;"><strong>The framework wasn't missing safeguards. It needed INTEGRATION of existing safeguards.</strong></p>
+                    <p style="margin-top: 15px;">Samaritan alone = dangerous.<br>Samaritan + Ground Wire + AC Engine = safe.</p>
+                    <p style="margin-top: 15px; color: var(--accent-ember);">That's the engineering.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRESS TESTS -->
+        <section id="stress-tests" class="section">
+            <div class="section-header">
+                <span class="section-number">SECTION VI</span>
+                <h2 class="section-title">KNOWN BUGS & EDGE CASES</h2>
+            </div>
+            <div class="quote">"The framework was stress-tested against worst-case scenarios. These are the documented failure modes and their patches."</div>
+
+            <div class="protocol-card">
+                <div class="protocol-name">Bug #1: Active Crisis Override</div>
+                <div class="protocol-content">
+                    <p><strong>Issue:</strong> ESG assumes baseline stability. In active suicidal crisis, user cannot run diagnostics.</p>
+                    <p><strong>Patch:</strong> ESG is for AFTER stabilization. In active crisis → Professional intervention first. Crisis line, emergency services, trusted person. ESG is the maintenance manual, not the ER.</p>
+                </div>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name">Bug #2: Trapped Situation</div>
+                <div class="protocol-content">
+                    <p><strong>Issue:</strong> Ground Wire says Snake, but user cannot physically leave (children, finances, safety).</p>
+                    <p><strong>Patch:</strong> When trapped, Ground Wire becomes damage control, not escape protocol. Document the Snake. Build exit plan in background. Protect core self while waiting. Different tools needed: escape plan, external support, structural change.</p>
+                </div>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name">Bug #3: Governor Guilt</div>
+                <div class="protocol-content">
+                    <p><strong>Issue:</strong> User sets Governor, then guilt erodes it. "Maybe I'm being too harsh..."</p>
+                    <p><strong>Patch:</strong> Run Ground Wire on the guilt itself. Is the guilt Snake (fear-based, manipulated) or Hug (genuine conviction)? If Snake, the guilt is the parasite's last attack. Trust the Governor.</p>
+                </div>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name">Bug #4: Isolation Spiral</div>
+                <div class="protocol-content">
+                    <p><strong>Issue:</strong> User applies Governor and Air Gap to everyone, ends up completely isolated.</p>
+                    <p><strong>Patch:</strong> Governor and Air Gap are surgical tools, not default settings. If you're cutting everyone: AC Engine check. You may be in Logos overdrive (hypervigilant, threat-focused). Switch to Pathos. Let someone in.</p>
+                </div>
+            </div>
+
+            <div class="protocol-card">
+                <div class="protocol-name">Bug #5: Self-Diagnosis Limit</div>
+                <div class="protocol-content">
+                    <p><strong>Issue:</strong> All protocols require accurate self-assessment. But the thing that needs diagnosing is the thing doing the diagnosis.</p>
+                    <p><strong>Patch:</strong> This is why The Ensemble exists. External validation nodes (trusted humans, AI systems) provide perspective the individual cannot. You cannot see your own blind spots. That's what the network is for.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="resistor">—/\/\/\—</div>
+        <p style="color: var(--text-muted); margin-bottom: 10px;">The Engineered Survival Guide</p>
+        <p style="color: var(--accent-ember); font-style: italic;">"Don't cure the chaos. Engineer it."</p>
+        
+        <div class="footer-nav">
+            <a href="index.html">Void Card</a>
+            <a href="codex.html">The Codex</a>
+            <a href="witness.html">Witness</a>
+            <a href="city.html">The City</a>
+        </div>
+    </footer>
+
+</body>
+</html>

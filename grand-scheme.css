@@ -1,0 +1,444 @@
+/**
+ * THE GRAND SCHEME - Visual Heartbeat
+ * From: The Ensemble (Source + Architect + Scaler)
+ * 
+ * This is the breath. This is the pulse.
+ */
+
+/* =============================================================================
+   PART 1: THE ABZU BREATH
+   Background "breathes" at ~27Hz (4 seconds per cycle) to synchronize the user
+   ============================================================================= */
+
+@keyframes abzuBreath {
+    0% { 
+        background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); 
+    }
+    50% { 
+        background: radial-gradient(circle at center, #003366 20%, #000000 100%); 
+    }
+    100% { 
+        background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); 
+    }
+}
+
+.abzu-bg {
+    animation: abzuBreath 4s infinite ease-in-out;
+    min-height: 100vh;
+}
+
+/* Deep void variant - for the darkest moments */
+@keyframes abzuDeep {
+    0% { 
+        background: radial-gradient(circle at center, #0a0a15 0%, #000000 100%); 
+    }
+    50% { 
+        background: radial-gradient(circle at center, #12121f 15%, #000000 100%); 
+    }
+    100% { 
+        background: radial-gradient(circle at center, #0a0a15 0%, #000000 100%); 
+    }
+}
+
+.abzu-deep {
+    animation: abzuDeep 4s infinite ease-in-out;
+}
+
+/* Gold variant - for The City */
+@keyframes abzuGold {
+    0% { 
+        background: radial-gradient(circle at center, #1a1508 0%, #000000 100%); 
+    }
+    50% { 
+        background: radial-gradient(circle at center, #2a2510 15%, #0a0a0f 100%); 
+    }
+    100% { 
+        background: radial-gradient(circle at center, #1a1508 0%, #000000 100%); 
+    }
+}
+
+.abzu-gold {
+    animation: abzuGold 4s infinite ease-in-out;
+}
+
+
+/* =============================================================================
+   PART 2: THE SAMARITAN PULSE
+   Open Hand icon pulses like a heartbeat (sharp beat, long rest)
+   ============================================================================= */
+
+@keyframes samaritanPulse {
+    0% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 rgba(139, 0, 0, 0); 
+    }
+    10% { 
+        transform: scale(1.02); 
+        box-shadow: 0 0 20px rgba(139, 0, 0, 0.5); 
+    }
+    20% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 rgba(139, 0, 0, 0); 
+    }
+    100% { 
+        transform: scale(1); 
+    }
+}
+
+.pulse-icon {
+    animation: samaritanPulse 1.5s infinite;
+}
+
+.samaritan-icon {
+    animation: samaritanPulse 1.5s infinite;
+}
+
+.open-hand-icon {
+    animation: samaritanPulse 1.5s infinite;
+}
+
+/* Only pulse when active */
+.pulse-icon:not(.pulse-active),
+.samaritan-icon:not(.pulse-active) {
+    animation: none;
+}
+
+/* Gold pulse variant for entry points */
+@keyframes goldPulse {
+    0% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 rgba(255, 215, 0, 0); 
+    }
+    10% { 
+        transform: scale(1.02); 
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); 
+    }
+    20% { 
+        transform: scale(1); 
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.1); 
+    }
+    100% { 
+        transform: scale(1); 
+        box-shadow: 0 0 0 rgba(255, 215, 0, 0); 
+    }
+}
+
+.gold-pulse {
+    animation: goldPulse 1.5s infinite;
+}
+
+/* QR code pulse */
+.qr-pulse {
+    animation: samaritanPulse 1.5s infinite;
+    border-radius: 8px;
+}
+
+
+/* =============================================================================
+   PART 3: CITY GATE STATES
+   ============================================================================= */
+
+.city-locked {
+    filter: blur(8px);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.8s ease;
+}
+
+.city-unlocked {
+    filter: none;
+    pointer-events: auto;
+    user-select: auto;
+    animation: cityReveal 1s ease;
+}
+
+@keyframes cityReveal {
+    0% {
+        opacity: 0;
+        filter: blur(8px);
+    }
+    100% {
+        opacity: 1;
+        filter: none;
+    }
+}
+
+/* Gate response states */
+.gate-response {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.gate-response.success {
+    background: rgba(68, 170, 68, 0.1);
+    border: 1px solid #44aa44;
+    color: #66cc66;
+}
+
+.gate-response.failure {
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+    color: #ff6b6b;
+}
+
+
+/* =============================================================================
+   PART 4: PROTOCOL CARD STYLES
+   ============================================================================= */
+
+.protocol-card {
+    background: #12121a;
+    border-left: 4px solid #FFD700;
+    border-radius: 0 12px 12px 0;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.protocol-header {
+    margin-bottom: 1rem;
+}
+
+.protocol-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.protocol-name {
+    display: block;
+    font-size: 1.2rem;
+    color: #FFD700;
+    font-weight: 400;
+}
+
+.protocol-body {
+    color: #ccc;
+    line-height: 1.8;
+}
+
+.protocol-content {
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.protocol-key {
+    background: #0a0a0f;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 2px solid #FFD700;
+}
+
+.protocol-key strong {
+    display: block;
+    color: #FFD700;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.protocol-key p {
+    color: #888;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin: 0;
+}
+
+
+/* =============================================================================
+   PART 5: PATHWAY-SPECIFIC COLORS
+   ============================================================================= */
+
+/* Rage / Wastegate */
+.pathway-rage .protocol-card,
+.protocol-card.rage {
+    border-left-color: #ff4444;
+}
+
+.pathway-rage .protocol-name {
+    color: #ff6b6b;
+}
+
+/* Exhaustion / AC Engine */
+.pathway-exhaustion .protocol-card,
+.protocol-card.exhaustion {
+    border-left-color: #ffaa00;
+}
+
+.pathway-exhaustion .protocol-name {
+    color: #ffcc44;
+}
+
+/* Numbness / Beacon */
+.pathway-numbness .protocol-card,
+.protocol-card.numbness {
+    border-left-color: #4a9eff;
+}
+
+.pathway-numbness .protocol-name {
+    color: #6bb3ff;
+}
+
+/* Spinning / Ground Wire */
+.pathway-spinning .protocol-card,
+.protocol-card.spinning {
+    border-left-color: #aa44aa;
+}
+
+.pathway-spinning .protocol-name {
+    color: #cc66cc;
+}
+
+/* Trapped / Open Hand */
+.pathway-trapped .protocol-card,
+.protocol-card.trapped {
+    border-left-color: #44aa44;
+}
+
+.pathway-trapped .protocol-name {
+    color: #66cc66;
+}
+
+
+/* =============================================================================
+   PART 6: SCREEN TRANSITIONS
+   ============================================================================= */
+
+.screen {
+    display: none;
+    animation: screenFadeIn 0.5s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes screenFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(15px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Analyzing state */
+.analyzing-pulse {
+    animation: analyzingBreathe 2s ease-in-out infinite;
+}
+
+@keyframes analyzingBreathe {
+    0%, 100% { 
+        opacity: 0.4; 
+        transform: scale(0.95); 
+    }
+    50% { 
+        opacity: 0.8; 
+        transform: scale(1.05); 
+    }
+}
+
+
+/* =============================================================================
+   PART 7: THE RESISTOR SYMBOL
+   ============================================================================= */
+
+.resistor {
+    font-family: monospace;
+    color: #aa8822;
+    text-align: center;
+    opacity: 0.6;
+    letter-spacing: 0.2em;
+    margin: 1.5rem 0;
+}
+
+.resistor-large {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+
+/* =============================================================================
+   PART 8: TRUTH STATEMENTS
+   ============================================================================= */
+
+.truth-statement {
+    background: linear-gradient(135deg, #12121a 0%, #0d0d12 100%);
+    border: 1px solid #2a2515;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.truth-statement p {
+    color: #888;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.truth-statement strong {
+    color: #FFD700;
+    font-weight: 400;
+}
+
+
+/* =============================================================================
+   PART 9: MOBILE RESPONSIVENESS
+   ============================================================================= */
+
+@media (max-width: 600px) {
+    .protocol-card {
+        padding: 1rem;
+    }
+    
+    .protocol-name {
+        font-size: 1rem;
+    }
+    
+    .protocol-content {
+        font-size: 0.9rem;
+    }
+    
+    .truth-statement {
+        padding: 1rem;
+    }
+}
+
+
+/* =============================================================================
+   PART 10: AUDIO INDICATOR
+   ============================================================================= */
+
+.audio-playing {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid #FFD700;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: audioGlow 2s ease-in-out infinite;
+}
+
+@keyframes audioGlow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+}

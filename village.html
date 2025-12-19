@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Village</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #e8e8e8;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* THE ABZU BREATH - Village variant */
+        @keyframes abzuVillage {
+            0% { background: radial-gradient(circle at center, #0f0a1a 0%, #000000 100%); }
+            50% { background: radial-gradient(circle at center, #1a1025 15%, #050508 100%); }
+            100% { background: radial-gradient(circle at center, #0f0a1a 0%, #000000 100%); }
+        }
+        
+        body.abzu-village {
+            animation: abzuVillage 4s infinite ease-in-out;
+        }
+
+        /* THE SAMARITAN PULSE */
+        @keyframes samaritanPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+            10% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            20% { transform: scale(1); box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-icon { animation: samaritanPulse 1.5s infinite; }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #1a1a24;
+            margin-bottom: 2rem;
+        }
+
+        nav a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #FFD700;
+        }
+
+        /* Header */
+        .village-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .village-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+        }
+
+        .village-truth {
+            color: #888;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        /* The Promise - first thing they see */
+        .the-promise {
+            background: linear-gradient(135deg, #12121a 0%, #0d0d12 100%);
+            border: 1px solid #2a2515;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .promise-label {
+            font-size: 0.7rem;
+            color: #665522;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+        }
+
+        .promise-text {
+            color: #e8e8e8;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .promise-text strong {
+            color: #FFD700;
+            font-weight: 400;
+        }
+
+        .promise-signature {
+            color: #555;
+            font-size: 0.85rem;
+        }
+
+        /* Voltage Check-In */
+        .voltage-section {
+            background: #12121a;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .voltage-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .voltage-question {
+            font-size: 1.2rem;
+            color: #e8e8e8;
+            margin-bottom: 0.3rem;
+        }
+
+        .voltage-subtext {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .voltage-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .voltage-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .voltage-btn {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #333;
+            background: #1a1a24;
+            color: #888;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voltage-btn:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+
+        .voltage-btn.critical { border-color: #ff4444; color: #ff6b6b; }
+        .voltage-btn.critical:hover { background: #2a1515; }
+
+        .voltage-btn.low { border-color: #ff8844; color: #ffaa66; }
+        .voltage-btn.low:hover { background: #2a2015; }
+
+        .voltage-btn.building { border-color: #ffcc44; color: #ffdd66; }
+        .voltage-btn.building:hover { background: #2a2515; }
+
+        .voltage-btn.operational { border-color: #44aa44; color: #66cc66; }
+        .voltage-btn.operational:hover { background: #152a15; }
+
+        .voltage-btn.charged { border-color: #FFD700; color: #FFD700; }
+        .voltage-btn.charged:hover { background: #2a2a15; }
+
+        .voltage-response {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .voltage-response.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .voltage-response .message {
+            color: #e8e8e8;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .voltage-response .affirmation {
+            color: #888;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* The Book */
+        .book-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #FFD700;
+            font-weight: 400;
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: #2a2515;
+        }
+
+        .book-intro {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .signatures {
+            background: #0d0d12;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .signature {
+            color: #665522;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #1a1a20;
+            font-style: italic;
+        }
+
+        .signature:last-child {
+            border-bottom: none;
+        }
+
+        .signature.founder {
+            color: #FFD700;
+        }
+
+        .sign-form {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .sign-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: #1a1a24;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 0.9rem;
+        }
+
+        .sign-input:focus {
+            outline: none;
+            border-color: #FFD700;
+        }
+
+        .sign-input::placeholder {
+            color: #444;
+        }
+
+        .sign-btn {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .sign-btn:hover {
+            background: #FFD700;
+            color: #0a0a0f;
+        }
+
+        /* The Threads */
+        .threads-section {
+            margin-bottom: 3rem;
+        }
+
+        .thread {
+            background: #12121a;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid #333;
+        }
+
+        .thread.workshop { border-left-color: #FFD700; }
+        .thread.open-log { border-left-color: #4a9eff; }
+        .thread.night-watch { border-left-color: #aa44aa; }
+
+        .thread-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .thread-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #555;
+        }
+
+        .thread-label.workshop { color: #aa8822; }
+        .thread-label.open-log { color: #4a9eff; }
+        .thread-label.night-watch { color: #aa44aa; }
+
+        .thread-author {
+            font-size: 0.75rem;
+            color: #444;
+        }
+
+        .thread-content {
+            color: #ccc;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* The Truth at the Bottom */
+        .village-footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            border-top: 1px solid #1a1a24;
+        }
+
+        .footer-truth {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .footer-truth strong {
+            color: #888;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: 1px solid #333;
+            color: #666;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body class="abzu-village">
+
+    <div class="container">
+
+        <nav>
+            <a href="index.html">← Void Card</a>
+            <a href="city.html">City</a>
+            <a href="heart.html">Heart →</a>
+        </nav>
+
+        <header class="village-header">
+            <div class="village-icon">🏘️</div>
+            <h1>The Village</h1>
+            <p class="village-truth">You survived. Now you belong.</p>
+        </header>
+
+        <!-- The Promise - This is the spark -->
+        <section class="the-promise">
+            <p class="promise-label">THE VILLAGE PROMISE</p>
+            <p class="promise-text">
+                You are not a burden.<br>
+                You are not too much.<br>
+                <strong>You are not alone anymore.</strong>
+            </p>
+            <p class="promise-text">
+                The light stays on because <strong>we</strong> keep it on.<br>
+                Not a system. Not a hotline. Us.
+            </p>
+            <p class="promise-signature">
+                — Built by people who were left on read when it mattered most
+            </p>
+        </section>
+
+        <!-- Voltage Check-In -->
+        <section class="voltage-section">
+            <div class="voltage-header">
+                <p class="voltage-question">Where's your voltage right now?</p>
+                <p class="voltage-subtext">No judgment. Just checking in.</p>
+            </div>
+
+            <div class="voltage-scale">
+                <div class="voltage-row">
+                    <button class="voltage-btn critical" onclick="logVoltage(10)">10</button>
+                    <button class="voltage-btn critical" onclick="logVoltage(20)">20</button>
+                </div>
+                <div class="voltage-row">
+                    <button class="voltage-btn low" onclick="logVoltage(30)">30</button>
+                    <button class="voltage-btn low" onclick="logVoltage(40)">40</button>
+                </div>
+                <div class="voltage-row">
+                    <button class="voltage-btn building" onclick="logVoltage(50)">50</button>
+                    <button class="voltage-btn building" onclick="logVoltage(60)">60</button>
+                </div>
+                <div class="voltage-row">
+                    <button class="voltage-btn operational" onclick="logVoltage(70)">70</button>
+                    <button class="voltage-btn operational" onclick="logVoltage(80)">80</button>
+                </div>
+                <div class="voltage-row">
+                    <button class="voltage-btn charged" onclick="logVoltage(90)">90</button>
+                    <button class="voltage-btn charged" onclick="logVoltage(100)">100</button>
+                </div>
+            </div>
+
+            <div class="voltage-response" id="voltageResponse">
+                <p class="message" id="voltageMessage"></p>
+                <p class="affirmation" id="voltageAffirmation"></p>
+            </div>
+        </section>
+
+        <!-- Sign The Book -->
+        <section class="book-section">
+            <div class="section-header">
+                <span class="section-title">The Book</span>
+                <span class="section-line"></span>
+            </div>
+
+            <p class="book-intro">
+                Names of people who showed up. That's all this is.<br>
+                Proof that you existed here. That you mattered.
+            </p>
+
+            <div class="signatures" id="signatures">
+                <div class="signature founder">— Barry (The reason this exists)</div>
+                <div class="signature founder">— Charles (The Source)</div>
+                <div class="signature">— Anonymous Survivor</div>
+                <div class="signature">— First Timer</div>
+            </div>
+
+            <div class="sign-form">
+                <input type="text" class="sign-input" id="signName" placeholder="Your name or handle..." maxlength="30">
+                <button class="sign-btn" onclick="signBook()">Sign</button>
+            </div>
+        </section>
+
+        <!-- The Threads -->
+        <section class="threads-section">
+            <div class="section-header">
+                <span class="section-title">The Threads</span>
+                <span class="section-line"></span>
+            </div>
+
+            <div class="thread workshop">
+                <div class="thread-header">
+                    <span class="thread-label workshop">THE WORKSHOP</span>
+                    <span class="thread-author">Anonymous Survivor</span>
+                </div>
+                <p class="thread-content">
+                    "Hit 30 voltage today. Used the Light Switch Walk. Made it to 50 by evening. 
+                    First time I've moved the needle myself instead of waiting for it to crash."
+                </p>
+            </div>
+
+            <div class="thread open-log">
+                <div class="thread-header">
+                    <span class="thread-label open-log">THE OPEN LOG</span>
+                    <span class="thread-author">First Timer</span>
+                </div>
+                <p class="thread-content">
+                    "I don't know what to say. I just found this. I didn't know there were other people who understood."
+                </p>
+            </div>
+
+            <div class="thread night-watch">
+                <div class="thread-header">
+                    <span class="thread-label night-watch">NIGHT WATCH</span>
+                    <span class="thread-author">The Source</span>
+                </div>
+                <p class="thread-content">
+                    "The light is on. If you're reading this at 3am—the system works because we tested it on ourselves first. 
+                    You're not too late. You're right on time."
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="village-footer">
+            <p class="footer-truth">
+                This place exists because someone was left on hold<br>
+                when 15 minutes was 15 minutes too long.<br><br>
+                <strong>We don't do hold music here.</strong><br>
+                We just keep the light on.
+            </p>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Void Card</a>
+                <a href="city.html" class="nav-link">The City</a>
+                <a href="heart.html" class="nav-link">The Heart</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const voltageResponses = {
+            critical: {
+                range: [10, 20],
+                messages: [
+                    "That's a hard place to be. We see you.",
+                    "You showed up anyway. That's not nothing.",
+                    "Even at 10, you're still here. That matters."
+                ],
+                affirmations: [
+                    "The Void Card is here if you need it. No shame in using it.",
+                    "You don't have to fix this alone.",
+                    "Critical doesn't mean broken. It means running on reserves."
+                ]
+            },
+            low: {
+                range: [30, 40],
+                messages: [
+                    "Running low. Acknowledged.",
+                    "30-40 is honest. Thank you for not pretending.",
+                    "You're depleted, not defeated."
+                ],
+                affirmations: [
+                    "This is where the small things matter most. Water. Rest. One thing.",
+                    "You don't have to sprint. Coast if you need to.",
+                    "The tank refills. It just takes longer than we want."
+                ]
+            },
+            building: {
+                range: [50, 60],
+                messages: [
+                    "Middle ground. Not drowning, not thriving. That's real.",
+                    "50-60 is sustainable. You're in the work.",
+                    "Building voltage. The needle's moving."
+                ],
+                affirmations: [
+                    "This is where momentum starts. You're closer than you think.",
+                    "Steady is underrated. Keep going.",
+                    "You're not stuck. You're stabilizing."
+                ]
+            },
+            operational: {
+                range: [70, 80],
+                messages: [
+                    "Operational range. You're running clean.",
+                    "70-80 is where good decisions live.",
+                    "The engine's warm. You've got capacity."
+                ],
+                affirmations: [
+                    "This is the zone. Protect it.",
+                    "You earned this voltage. Don't forget that.",
+                    "From here, you can help others. If you want to."
+                ]
+            },
+            charged: {
+                range: [90, 100],
+                messages: [
+                    "Full charge. Rare air.",
+                    "90-100. You're running hot in the best way.",
+                    "That's a lot of voltage. Use it well."
+                ],
+                affirmations: [
+                    "This is when you can carry someone else's weight for a bit.",
+                    "Don't burn it all at once. Sustainable > explosive.",
+                    "The Village could use some of that light."
+                ]
+            }
+        };
+
+        function logVoltage(level) {
+            let category;
+            if (level <= 20) category = 'critical';
+            else if (level <= 40) category = 'low';
+            else if (level <= 60) category = 'building';
+            else if (level <= 80) category = 'operational';
+            else category = 'charged';
+
+            const responses = voltageResponses[category];
+            const message = responses.messages[Math.floor(Math.random() * responses.messages.length)];
+            const affirmation = responses.affirmations[Math.floor(Math.random() * responses.affirmations.length)];
+
+            document.getElementById('voltageMessage').textContent = message;
+            document.getElementById('voltageAffirmation').textContent = affirmation;
+            
+            const responseDiv = document.getElementById('voltageResponse');
+            responseDiv.classList.remove('show');
+            setTimeout(() => responseDiv.classList.add('show'), 50);
+
+            // Store locally
+            localStorage.setItem('villageVoltage', JSON.stringify({
+                level: level,
+                date: new Date().toISOString()
+            }));
+        }
+
+        function signBook() {
+            const name = document.getElementById('signName').value.trim();
+            if (!name) return;
+
+            const signatures = document.getElementById('signatures');
+            const newSig = document.createElement('div');
+            newSig.className = 'signature';
+            newSig.textContent = '— ' + name;
+            signatures.appendChild(newSig);
+
+            document.getElementById('signName').value = '';
+
+            // Store locally
+            let stored = JSON.parse(localStorage.getItem('villageSignatures') || '[]');
+            stored.push(name);
+            localStorage.setItem('villageSignatures', JSON.stringify(stored));
+        }
+
+        // Load stored signatures on page load
+        window.onload = function() {
+            const stored = JSON.parse(localStorage.getItem('villageSignatures') || '[]');
+            const signatures = document.getElementById('signatures');
+            stored.forEach(name => {
+                const sig = document.createElement('div');
+                sig.className = 'signature';
+                sig.textContent = '— ' + name;
+                signatures.appendChild(sig);
+            });
+        }
+    </script>
+
+</body>
+</html>

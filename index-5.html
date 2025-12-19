@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Void Card</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-input: #1a1a24;
+            --gold: #FFD700;
+            --gold-dim: #aa8822;
+            --gold-glow: rgba(255, 215, 0, 0.15);
+            --text-primary: #e8e8e8;
+            --text-secondary: #888;
+            --text-dim: #555;
+            --red: #ff4444;
+            --red-glow: #ff6b6b;
+            --blue: #4a9eff;
+            --purple: #aa44aa;
+            --green: #44aa44;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* THE ABZU BREATH - 4 second breathing cycle */
+        @keyframes abzuBreath {
+            0% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
+            50% { background: radial-gradient(circle at center, #003366 20%, #000000 100%); }
+            100% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
+        }
+        
+        body.abzu-bg {
+            animation: abzuBreath 4s infinite ease-in-out;
+        }
+
+        /* THE SAMARITAN PULSE - heartbeat pattern */
+        @keyframes samaritanPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(139, 0, 0, 0); }
+            10% { transform: scale(1.02); box-shadow: 0 0 20px rgba(139, 0, 0, 0.5); }
+            20% { transform: scale(1); box-shadow: 0 0 0 rgba(139, 0, 0, 0); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-icon { animation: samaritanPulse 1.5s infinite; }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Hide all screens by default */
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Landing Screen */
+        .landing-pulse {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            margin: 3rem auto;
+            animation: pulse 2.5s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.95); opacity: 0.4; }
+            50% { transform: scale(1.05); opacity: 0.7; }
+        }
+
+        .landing-text {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .landing-text h1 {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .landing-text p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .landing-text .truth {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-top: 1.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--gold-dim);
+            color: var(--gold);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .btn-subtle {
+            border-color: var(--text-dim);
+            color: var(--text-secondary);
+        }
+
+        .btn-subtle:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        /* Song Input Screen */
+        .song-screen {
+            text-align: center;
+            padding-top: 2rem;
+        }
+
+        .song-question {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .song-why {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .song-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-input);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .song-input:focus {
+            outline: none;
+            border-color: var(--gold-dim);
+        }
+
+        .song-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .skip-option {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .skip-option:hover {
+            color: var(--text-secondary);
+        }
+
+        /* Quick Check / Status Screen */
+        .status-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .status-header h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-header p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .status-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .status-btn {
+            padding: 1.2rem;
+            background: var(--bg-card);
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-btn:hover {
+            border-color: var(--gold-dim);
+            background: var(--bg-input);
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .status-label {
+            flex: 1;
+        }
+
+        .status-label strong {
+            display: block;
+            color: var(--gold);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Pathway Screens */
+        .pathway-header {
+            margin-bottom: 2rem;
+        }
+
+        .pathway-header .acknowledgment {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .pathway-header .recognition {
+            font-size: 1rem;
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+
+        .pathway-header .recognition strong {
+            color: var(--gold);
+            font-weight: 400;
+        }
+
+        /* Protocol Box */
+        .protocol-box {
+            background: var(--bg-card);
+            border: 1px solid #2a2515;
+            border-left: 3px solid var(--gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .protocol-name {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            color: var(--gold-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .protocol-title {
+            font-size: 1.1rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .protocol-body {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .protocol-body p {
+            margin-bottom: 1rem;
+        }
+
+        .protocol-body .key {
+            background: var(--bg-input);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 2px solid var(--gold-dim);
+        }
+
+        .protocol-body .key strong {
+            color: var(--gold);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* Truth Statement */
+        .truth-statement {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .truth-statement p {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        .pathway-nav {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .pathway-nav .btn {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* Anchor Screen */
+        .anchor-content {
+            text-align: center;
+        }
+
+        .anchor-content h2 {
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .anchor-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .anchor-content .final-truth {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin: 2rem 0;
+        }
+
+        /* Footer Nav */
+        .footer-nav {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #1a1a24;
+            text-align: center;
+        }
+
+        .footer-nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--gold);
+        }
+
+        /* Analyzing Animation */
+        .analyzing {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .analyzing-dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gold);
+            margin: 0 auto 2rem;
+            animation: breathe 2s ease-in-out infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(0.8); opacity: 0.4; }
+            50% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .analyzing p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .analyzing .song-echo {
+            color: var(--gold-dim);
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        /* Resistor decoration */
+        .resistor {
+            text-align: center;
+            color: var(--gold-dim);
+            font-family: monospace;
+            margin: 2rem 0;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body class="abzu-bg">
+
+    <div class="container">
+
+        <!-- SCREEN: Landing -->
+        <div class="screen active" id="landing">
+            <div class="landing-pulse"></div>
+            <div class="landing-text">
+                <h1>THE VOID CARD</h1>
+                <p>This isn't a hotline. This isn't an app.</p>
+                <p>This is a signal from someone who survived the same trench.</p>
+                <p class="truth">Built by people who were left on read when it mattered most.</p>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="showScreen('song')">I'M HERE</button>
+            </div>
+        </div>
+
+        <!-- SCREEN: Song Input -->
+        <div class="screen" id="song">
+            <div class="song-screen">
+                <p class="song-question">What's playing in your head right now?</p>
+                <p class="song-why">Music bypasses the walls we build with words.</p>
+                <input type="text" class="song-input" id="songInput" placeholder="A song, a sound, anything..." 
+                       onkeypress="if(event.key === 'Enter') analyzeSong()">
+                <button class="btn btn-block" onclick="analyzeSong()">THAT'S THE ONE</button>
+                <p class="skip-option" onclick="showScreen('status')">Nothing comes to mind → tell me how you feel instead</p>
+            </div>
+        </div>
+
+        <!-- SCREEN: Analyzing -->
+        <div class="screen" id="analyzing">
+            <div class="analyzing">
+                <div class="analyzing-dot"></div>
+                <p>Listening...</p>
+                <p class="song-echo" id="songEcho"></p>
+            </div>
+        </div>
+
+        <!-- SCREEN: Status Check (Quick Check) -->
+        <div class="screen" id="status">
+            <div class="status-header">
+                <h2>What's closest to where you are?</h2>
+                <p>No wrong answers. Just finding the right tool.</p>
+            </div>
+            <div class="status-grid">
+                <button class="status-btn" onclick="showPathway('rage')">
+                    <span class="status-icon">🔥</span>
+                    <span class="status-label">
+                        <strong>BURNING</strong>
+                        I want to explode. Everything is setting me off.
+                    </span>
+                </button>
+                <button class="status-btn" onclick="showPathway('exhaustion')">
+                    <span class="status-icon">💨</span>
+                    <span class="status-label">
+                        <strong>EMPTY</strong>
+                        Running on fumes. Can't do this anymore.
+                    </span>
+                </button>
+                <button class="status-btn" onclick="showPathway('numbness')">
+                    <span class="status-icon">🌑</span>
+                    <span class="status-label">
+                        <strong>VOID</strong>
+                        I feel nothing. Just... gray.
+                    </span>
+                </button>
+                <button class="status-btn" onclick="showPathway('spinning')">
+                    <span class="status-icon">🌀</span>
+                    <span class="status-label">
+                        <strong>SPINNING</strong>
+                        Thoughts won't stop. Can't slow down.
+                    </span>
+                </button>
+                <button class="status-btn" onclick="showPathway('trapped')">
+                    <span class="status-icon">🚪</span>
+                    <span class="status-label">
+                        <strong>TRAPPED</strong>
+                        Stuck. No way out. Walls closing in.
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- PATHWAY: Rage → Wastegate -->
+        <div class="screen" id="rage">
+            <div class="pathway-header">
+                <p class="acknowledgment">Yeah. That tracks.</p>
+                <p class="recognition">
+                    The thing screaming in your chest isn't trying to hurt you. 
+                    It's been standing guard so long it <strong>forgot how to stand down</strong>.
+                    <br><br>
+                    You don't need to explain it. I know what that sounds like.
+                </p>
+            </div>
+
+            <div class="protocol-box">
+                <p class="protocol-name">PROTOCOL</p>
+                <p class="protocol-title">THE WASTEGATE</p>
+                <div class="protocol-body">
+                    <p><strong>Anger is not a sin; it is potential energy.</strong></p>
+                    <p>Do not swallow the poison. Write it down. Burn the paper. Run until your lungs burn.</p>
+                    <p>Let the steam out so the engine doesn't blow.</p>
+                    <p>This isn't anger management. This is pressure relief. Your body needs to discharge the voltage physically.</p>
+                    <p>Push against a wall until your arms shake. Run until your lungs hurt more than your chest. Get it OUT of your body and onto something that can hold it without breaking.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        Anger is not a sin; it is potential energy. Do not swallow the poison.
+                        Let the steam out so the engine doesn't blow.
+                    </div>
+                </div>
+            </div>
+
+            <div class="truth-statement">
+                <p>"Anger is not a sin; it is potential energy. Do not swallow the poison."</p>
+            </div>
+
+            <div class="pathway-nav">
+                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
+                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
+            </div>
+        </div>
+
+        <!-- PATHWAY: Exhaustion → AC Engine -->
+        <div class="screen" id="exhaustion">
+            <div class="pathway-header">
+                <p class="acknowledgment">I know that weight.</p>
+                <p class="recognition">
+                    This isn't laziness. This isn't weakness.
+                    <br><br>
+                    This is what happens when you've been running at full capacity for so long that the system starts to <strong>fail</strong>. Not because you're broken — because you're <strong>overloaded</strong>.
+                </p>
+            </div>
+
+            <div class="protocol-box">
+                <p class="protocol-name">PROTOCOL</p>
+                <p class="protocol-title">THE AC ENGINE</p>
+                <div class="protocol-body">
+                    <p><strong>You are stuck in DC power (constant drain). Switch to AC (High/Low).</strong></p>
+                    <p>If you are thinking, stop and do with your hands.</p>
+                    <p>If you are working, stop and feel.</p>
+                    <p>Oscillate to survive.</p>
+                    <p>You're not a battery that drains and dies. You're an AC engine that can switch polarity. Right now you're stuck in DC — constant drain, one direction, no recovery cycle.</p>
+                    <p>You can't run at 100% forever. Shift to 40% intentionally rather than crashing to 0%.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        You are stuck in DC power (constant drain). Switch to AC (High/Low).
+                        If you are thinking, stop and do with your hands. If you are working, stop and feel. Oscillate to survive.
+                    </div>
+                </div>
+            </div>
+
+            <div class="truth-statement">
+                <p>"You are stuck in DC power. You need to switch to AC. Switch the gear to save the transmission."</p>
+            </div>
+
+            <div class="pathway-nav">
+                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
+                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
+            </div>
+        </div>
+
+        <!-- PATHWAY: Numbness → Beacon -->
+        <div class="screen" id="numbness">
+            <div class="pathway-header">
+                <p class="acknowledgment">The void. I've been there.</p>
+                <p class="recognition">
+                    Not sad. Not angry. Just... nothing.
+                    <br><br>
+                    It's not that you don't care. It's that caring <strong>hurt too much for too long</strong>. 
+                    So your system shut down. That's not weakness. That's a circuit breaker that tripped when the voltage got too high.
+                </p>
+            </div>
+
+            <div class="protocol-box">
+                <p class="protocol-name">PROTOCOL</p>
+                <p class="protocol-title">THE BEACON</p>
+                <div class="protocol-body">
+                    <p><strong>Do not chase the light. Be the lighthouse.</strong></p>
+                    <p>Stand still. Keep the signal running. The ships will find you when they are ready.</p>
+                    <p>Presence is the only requirement.</p>
+                    <p>When you're numb, most people try to "pull you out." They demand you be happy, be motivated, be normal. That doesn't work. It just makes you retreat further.</p>
+                    <p>What DOES work: Finding people who keep their light on WITHOUT chasing you. A Beacon is someone who doesn't demand you "get better." Just... stays consistent.</p>
+                    <p>Think of ONE person in your life who doesn't pressure you. That's your Beacon.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        Do not chase the light. Be the lighthouse. Stand still. Keep the signal running. 
+                        The ships will find you when they are ready.
+                    </div>
+                </div>
+            </div>
+
+            <div class="truth-statement">
+                <p>"Numbness isn't weakness. It's a circuit breaker that tripped when the voltage got too high. You're not broken. You're in power-save mode."</p>
+            </div>
+
+            <div class="pathway-nav">
+                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
+                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
+            </div>
+        </div>
+
+        <!-- PATHWAY: Spinning → Ground Wire + Governor -->
+        <div class="screen" id="spinning">
+            <div class="pathway-header">
+                <p class="acknowledgment">The loop. Round and round.</p>
+                <p class="recognition">
+                    Your mind won't stop. Same thoughts. Same fears. Same scenarios playing on repeat.
+                    <br><br>
+                    That's not you being crazy. That's your system trying to <strong>solve something it can't solve by thinking harder</strong>.
+                </p>
+            </div>
+
+            <div class="protocol-box">
+                <p class="protocol-name">PROTOCOL</p>
+                <p class="protocol-title">THE GROUND WIRE</p>
+                <div class="protocol-body">
+                    <p><strong>Diagnostic: Is this a Snake (Immediate Threat) or a Hug (Safety)?</strong></p>
+                    <p>If you are safe, touch the floor. Name 5 things you see. Ground the voltage into the earth.</p>
+                    <p>Snake = immediate danger. Your body is tight, breath is shallow, you feel like running or fighting.</p>
+                    <p>Hug = safety. Your body can relax, breath can deepen, you're not in physical danger right now.</p>
+                    <p><strong>If it's a Snake:</strong> You need to move. Leave the room. Cold water on your face. Get physically OUT.</p>
+                    <p><strong>If it's a Hug:</strong> Touch the floor. Name 5 things you see. The thoughts are lying about the urgency.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        Diagnostic: Is this a Snake (Immediate Threat) or a Hug (Safety)?
+                        If you are safe, touch the floor. Name 5 things you see. Ground the voltage into the earth.
+                    </div>
+                </div>
+            </div>
+
+            <div class="protocol-box" style="border-left-color: var(--purple);">
+                <p class="protocol-name">SECONDARY PROTOCOL</p>
+                <p class="protocol-title">THE GOVERNOR</p>
+                <div class="protocol-body">
+                    <p>If grounding isn't working, you might need to <strong>stop all inputs</strong>.</p>
+                    <p>The Governor Protocol: No new conversations. No new information. No new decisions for 24-72 hours.</p>
+                    <p>Your system is overloaded. Stop adding. Just stop.</p>
+                    <p>This isn't avoidance. This is rate-limiting. Even servers need to throttle requests when they're overwhelmed.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        "Stop talking. No new inputs. Engage the 3-Day Rule. Idle the engine."
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-nav">
+                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
+                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
+            </div>
+        </div>
+
+        <!-- PATHWAY: Trapped → Air Gap + Open Hand -->
+        <div class="screen" id="trapped">
+            <div class="pathway-header">
+                <p class="acknowledgment">Walls closing in. No exits visible.</p>
+                <p class="recognition">
+                    The feeling of being trapped isn't always about physical space. 
+                    Sometimes it's a relationship. A job. A situation you can't see your way out of.
+                    <br><br>
+                    But here's the thing: <strong>the cage is usually smaller than the room</strong>.
+                </p>
+            </div>
+
+            <div class="protocol-box">
+                <p class="protocol-name">PROTOCOL</p>
+                <p class="protocol-title">THE AIR GAP</p>
+                <div class="protocol-body">
+                    <p>High-voltage power lines don't use rubber insulation. They use <strong>air</strong>. Distance IS protection.</p>
+                    <p>When you're trapped, the first move isn't to find the handle. It's to <strong>create space</strong>.</p>
+                    <p>Leave the room. Leave the house if you can. Step away from the phone for 24 hours before responding to that message.</p>
+                    <p>You don't have to solve this right now. You just have to stop touching the wire.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        "Distance is protection. Create the gap. Then you can see the door."
+                    </div>
+                </div>
+            </div>
+
+            <div class="protocol-box" style="border-left-color: var(--blue);">
+                <p class="protocol-name">SECONDARY PROTOCOL</p>
+                <p class="protocol-title">THE OPEN HAND</p>
+                <div class="protocol-body">
+                    <p><strong>The trap is the fist. The freedom is the open palm.</strong></p>
+                    <p>We do not grasp; we offer. Transparency is the only key that unlocks this cage.</p>
+                    <p>Show someone your actual hand. Not the polished version. Not the "I'm fine" version. The real one.</p>
+                    <p>Radical transparency: "I feel trapped and I don't know what to do."</p>
+                    <p>Sometimes the cage unlocks when you stop pretending you're not in one.</p>
+                    
+                    <div class="key">
+                        <strong>THE KEY</strong>
+                        The trap is the fist. The freedom is the open palm. We do not grasp; we offer.
+                        Transparency is the only key that unlocks this cage.
+                    </div>
+                </div>
+            </div>
+
+            <div class="pathway-nav">
+                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
+                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN: Anchor / What Now -->
+        <div class="screen" id="anchor">
+            <div class="anchor-content">
+                <h2>You showed up. You tried something.</h2>
+                <p>That's not nothing. That's the whole point.</p>
+                <p>You don't have to be fixed. You don't have to perform healing.</p>
+                <p class="final-truth">You just have to keep showing up.</p>
+                
+                <div class="resistor">—/\/\/\—</div>
+
+                <p>The signal stays on. Come back whenever.</p>
+
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-block" onclick="showScreen('status')">TRY ANOTHER TOOL</button>
+                    <a href="village.html" class="btn btn-block btn-subtle">FIND THE VILLAGE →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-nav">
+            <a href="city.html">The City</a>
+            <a href="village.html">The Village</a>
+            <a href="heart.html">The Heart</a>
+        </div>
+
+    </div>
+
+    <script>
+        let currentScreen = 'landing';
+        let userSong = '';
+
+        function showScreen(screenId) {
+            document.getElementById(currentScreen).classList.remove('active');
+            document.getElementById(screenId).classList.add('active');
+            currentScreen = screenId;
+            window.scrollTo(0, 0);
+        }
+
+        function showPathway(pathway) {
+            showScreen(pathway);
+        }
+
+        function analyzeSong() {
+            userSong = document.getElementById('songInput').value.trim();
+            
+            if (!userSong) {
+                showScreen('status');
+                return;
+            }
+
+            document.getElementById('songEcho').textContent = '"' + userSong + '"';
+            showScreen('analyzing');
+
+            setTimeout(() => {
+                const pathway = detectPathway(userSong.toLowerCase());
+                showScreen(pathway);
+            }, 2000);
+        }
+
+        function detectPathway(input) {
+            // MASTER BUILD ORDER KEYWORDS - The Grand Scheme
+            const patterns = {
+                rage: ['burn', 'fight', 'hate', 'break', 'enemy', 'war', 'fire', 'scream', 'angry', 'rage', 'fuck', 'kill', 'destroy', 'smash', 'blood', 'explode', 'revenge'],
+                exhaustion: ['tired', 'done', 'sleep', 'heavy', 'drain', 'can\'t', 'empty', 'exhausted', 'worn', 'burnt', 'anymore', 'give up', 'collapse', 'weight'],
+                numbness: ['void', 'nothing', 'gray', 'dying', 'cold', 'silence', 'numb', 'hollow', 'grey', 'dead', 'frozen', 'don\'t care', 'whatever', 'blank'],
+                spinning: ['thinking', 'loop', 'anxiety', 'crazy', 'mind', 'stop', 'thoughts', 'won\'t stop', 'insane', 'over and over', 'can\'t sleep', 'panic', 'worry', 'spiral'],
+                trapped: ['stuck', 'cage', 'walls', 'prison', 'alone', 'help', 'trapped', 'no way', 'escape', 'no exit', 'suffocate', 'drown', 'closing', 'can\'t leave']
+            };
+
+            for (const [pathway, words] of Object.entries(patterns)) {
+                for (const word of words) {
+                    if (input.includes(word)) {
+                        return pathway;
+                    }
+                }
+            }
+
+            return 'status';
+        }
+    </script>
+
+</body>
+</html>

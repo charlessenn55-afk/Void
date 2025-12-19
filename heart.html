@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Acquired</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* THE ABZU BREATH */
+        @keyframes abzuBreath {
+            0% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
+            50% { background: radial-gradient(circle at center, #003366 20%, #000000 100%); }
+            100% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
+        }
+        
+        body.abzu-bg {
+            animation: abzuBreath 4s infinite ease-in-out;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Screen 0: Signal Acquired */
+        .pulse-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #4a9eff;
+            animation: pulse 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .pulse-core {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4a9eff 0%, #1a3a5c 100%);
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(0.9); }
+            50% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            margin-bottom: 0.5rem;
+            color: #4a9eff;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .enter-btn {
+            background: transparent;
+            border: 1px solid #4a9eff;
+            color: #4a9eff;
+            padding: 1rem 3rem;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .enter-btn:hover {
+            background: #4a9eff;
+            color: #0a0a0f;
+        }
+
+        /* Screen 1: Soundtrack */
+        .question {
+            font-size: 1.4rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            color: #e8e8e8;
+        }
+
+        .why {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .song-input {
+            width: 100%;
+            padding: 1rem;
+            background: #1a1a24;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .song-input:focus {
+            outline: none;
+            border-color: #4a9eff;
+        }
+
+        .song-input::placeholder {
+            color: #555;
+        }
+
+        .skip-link {
+            color: #555;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .skip-link:hover {
+            color: #888;
+        }
+
+        /* Screen 2: Engine Check */
+        .engine-question {
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
+
+        .engine-states {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .state-btn {
+            padding: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .state-btn .label {
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        .state-btn .desc {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+
+        /* RED LINE - Overheating, overwhelmed */
+        .redline {
+            background: linear-gradient(135deg, #3d1515 0%, #1a0a0a 100%);
+            border: 1px solid #ff4444;
+            color: #ff6b6b;
+        }
+
+        .redline:hover {
+            background: linear-gradient(135deg, #4d1f1f 0%, #2a1515 100%);
+            transform: scale(1.02);
+        }
+
+        /* EMPTY TANK - Depleted, nothing left */
+        .empty {
+            background: linear-gradient(135deg, #1a1a24 0%, #0d0d12 100%);
+            border: 1px solid #555;
+            color: #888;
+        }
+
+        .empty:hover {
+            background: linear-gradient(135deg, #252530 0%, #1a1a20 100%);
+            transform: scale(1.02);
+        }
+
+        /* STATIC - Stuck, frozen, can't move */
+        .static {
+            background: linear-gradient(135deg, #1a2030 0%, #0d1018 100%);
+            border: 1px solid #667799;
+            color: #99aacc;
+        }
+
+        .static:hover {
+            background: linear-gradient(135deg, #252a3d 0%, #1a1f2d 100%);
+            transform: scale(1.02);
+        }
+
+        /* Screen 3: Protocol */
+        .protocol-container {
+            width: 100%;
+        }
+
+        .protocol-header {
+            font-size: 0.8rem;
+            color: #666;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.5rem;
+        }
+
+        .protocol-state {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .protocol-state.redline-text { color: #ff6b6b; }
+        .protocol-state.empty-text { color: #888; }
+        .protocol-state.static-text { color: #99aacc; }
+
+        .song-reminder {
+            background: #1a1a24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #4a9eff;
+        }
+
+        .song-label {
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .song-title {
+            color: #4a9eff;
+            font-size: 1rem;
+        }
+
+        .protocol-steps {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            padding: 1rem;
+            background: #12121a;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid transparent;
+        }
+
+        .step.redline-step { border-left-color: #ff4444; }
+        .step.empty-step { border-left-color: #555; }
+        .step.static-step { border-left-color: #667799; }
+
+        .step-number {
+            font-size: 0.7rem;
+            color: #555;
+            margin-bottom: 0.3rem;
+        }
+
+        .step-action {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .truth {
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+            padding: 1rem;
+            background: #0d0d12;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Screen 4: Go Dark */
+        .dark-message {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .dark-emphasis {
+            color: #e8e8e8;
+            display: block;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .return-info {
+            font-size: 0.8rem;
+            color: #444;
+            margin-top: 2rem;
+        }
+
+        /* Navigation */
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #888;
+            padding: 0.8rem 2rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .nav-btn:hover {
+            border-color: #4a9eff;
+            color: #4a9eff;
+        }
+
+        .nav-btn.primary {
+            border-color: #4a9eff;
+            color: #4a9eff;
+        }
+
+        .nav-btn.primary:hover {
+            background: #4a9eff;
+            color: #0a0a0f;
+        }
+
+        .dark-btn {
+            background: #1a1a24;
+            border: none;
+            color: #555;
+            padding: 1rem 2rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin-top: 2rem;
+        }
+
+        .dark-btn:hover {
+            background: #252530;
+            color: #888;
+        }
+    </style>
+</head>
+<body class="abzu-bg">
+
+    <!-- Navigation -->
+    <nav style="max-width: 400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between;">
+        <a href="village.html" style="color: #555; text-decoration: none; font-size: 0.85rem;">← Village</a>
+        <a href="index.html" style="color: #555; text-decoration: none; font-size: 0.85rem;">Void Card</a>
+    </nav>
+
+    <!-- Screen 0: SIGNAL ACQUIRED -->
+    <div class="screen active" id="screen0">
+        <div class="pulse-ring">
+            <div class="pulse-core"></div>
+        </div>
+        <h1>SIGNAL ACQUIRED</h1>
+        <p class="subtitle">You showed up. That matters.</p>
+        <button class="enter-btn" onclick="goTo(1)">I'M HERE</button>
+    </div>
+
+    <!-- Screen 1: What is the Soundtrack? -->
+    <div class="screen" id="screen1">
+        <p class="question">What's playing in your head right now?</p>
+        <p class="why">Music bypasses the walls we build with words.</p>
+        <input type="text" class="song-input" id="songInput" placeholder="A song, a sound, anything..." 
+               onkeypress="if(event.key === 'Enter') goTo(2)">
+        <button class="nav-btn primary" onclick="goTo(2)">CONTINUE</button>
+        <p class="skip-link" onclick="goTo(2)">nothing comes to mind</p>
+    </div>
+
+    <!-- Screen 2: How is the Engine Running? -->
+    <div class="screen" id="screen2">
+        <p class="engine-question">How's the engine running?</p>
+        <div class="engine-states">
+            <button class="state-btn redline" onclick="selectState('redline')">
+                <span class="label">RED LINE</span>
+                <span class="desc">Overheating. Can't slow down. Everything's too much.</span>
+            </button>
+            <button class="state-btn empty" onclick="selectState('empty')">
+                <span class="label">EMPTY TANK</span>
+                <span class="desc">Nothing left. Running on fumes. Depleted.</span>
+            </button>
+            <button class="state-btn static" onclick="selectState('static')">
+                <span class="label">STATIC</span>
+                <span class="desc">Frozen. Stuck. Can't move forward or back.</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Protocol Display -->
+    <div class="screen" id="screen3">
+        <div class="protocol-container">
+            <p class="protocol-header">CURRENT STATE</p>
+            <p class="protocol-state" id="stateDisplay"></p>
+            
+            <div class="song-reminder" id="songReminder" style="display: none;">
+                <p class="song-label">YOUR ANCHOR</p>
+                <p class="song-title" id="songDisplay"></p>
+            </div>
+
+            <div class="protocol-steps" id="protocolSteps"></div>
+
+            <p class="truth" id="truthStatement"></p>
+
+            <button class="dark-btn" onclick="goTo(4)">GO DARK</button>
+        </div>
+    </div>
+
+    <!-- Screen 4: Go Dark -->
+    <div class="screen" id="screen4">
+        <p class="dark-message">
+            You don't have to perform healing.
+            <span class="dark-emphasis">You just have to keep showing up.</span>
+        </p>
+        <p class="dark-message">
+            The signal stays on.<br>
+            Come back whenever.
+        </p>
+        <p class="dark-message" style="color: #FFD700; margin-top: 2rem;">
+            You just became one of the people who keeps the light on.
+        </p>
+        <button class="nav-btn" onclick="reset()">RETURN TO START</button>
+        <p class="return-info">Close this tab when you're ready.</p>
+        <div style="margin-top: 2rem;">
+            <a href="village.html" style="color: #555; text-decoration: none; font-size: 0.85rem;">Find The Village →</a>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 0;
+        let selectedState = '';
+        let userSong = '';
+
+        const protocols = {
+            redline: {
+                display: 'RED LINE',
+                class: 'redline',
+                steps: [
+                    "Put one hand on your chest. Feel the engine racing.",
+                    "Exhale longer than you inhale. 4 in, 7 out. The system needs to vent.",
+                    "Name 5 things you can see. Right now. Out loud if you can.",
+                    "You are not the emergency. You are witnessing one. There's a difference."
+                ],
+                truth: "The fire in your chest is trying to protect you. It just doesn't know the threat has passed. You can thank it and let it rest."
+            },
+            empty: {
+                display: 'EMPTY TANK',
+                class: 'empty',
+                steps: [
+                    "Stop trying to start the engine. It's okay to coast.",
+                    "Drink something. Water. Anything. The tank needs something.",
+                    "Lie down if you can. Even 2 minutes flat changes the pressure.",
+                    "You don't have to fix this tonight. Permission granted to just exist."
+                ],
+                truth: "You're not broken. You're depleted. Those are different problems with different solutions. Rest isn't quitting. It's refueling."
+            },
+            static: {
+                display: 'STATIC',
+                class: 'static',
+                steps: [
+                    "Wiggle your fingers. Then your toes. The smallest movement breaks the freeze.",
+                    "Say one word out loud. Any word. Your voice reminds your body you're still here.",
+                    "Look at something that moves. Clouds. A fan. Anything not frozen.",
+                    "The path forward doesn't have to be the whole path. Just one step exists right now."
+                ],
+                truth: "You're not stuck forever. You're stuck right now. And right now always passes. The static isn't a wall. It's weather."
+            }
+        };
+
+        function goTo(screen) {
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
+            document.getElementById(`screen${screen}`).classList.add('active');
+            currentScreen = screen;
+
+            if (screen === 1) {
+                setTimeout(() => document.getElementById('songInput').focus(), 300);
+            }
+
+            if (screen === 2) {
+                userSong = document.getElementById('songInput').value.trim();
+            }
+        }
+
+        function selectState(state) {
+            selectedState = state;
+            displayProtocol();
+            goTo(3);
+        }
+
+        function displayProtocol() {
+            const p = protocols[selectedState];
+            
+            document.getElementById('stateDisplay').textContent = p.display;
+            document.getElementById('stateDisplay').className = `protocol-state ${p.class}-text`;
+
+            if (userSong) {
+                document.getElementById('songReminder').style.display = 'block';
+                document.getElementById('songDisplay').textContent = userSong;
+            }
+
+            let stepsHTML = '';
+            p.steps.forEach((step, i) => {
+                stepsHTML += `
+                    <div class="step ${p.class}-step">
+                        <p class="step-number">STEP ${i + 1}</p>
+                        <p class="step-action">${step}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('protocolSteps').innerHTML = stepsHTML;
+
+            document.getElementById('truthStatement').textContent = p.truth;
+        }
+
+        function reset() {
+            selectedState = '';
+            userSong = '';
+            document.getElementById('songInput').value = '';
+            goTo(0);
+        }
+    </script>
+
+</body>
+</html>
