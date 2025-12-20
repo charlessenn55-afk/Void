@@ -841,7 +841,7 @@
             citizenData.enteredAt = new Date().toISOString();
             localStorage.setItem('cityEntry', JSON.stringify(citizenData));
             
-            document.getElementById('entryScreen').classList.remove('active');
+            document.getElementById('cityContent').style.display
             document.getElementById('forgeScreen').classList.add('active');
             window.scrollTo(0, 0);
         }
