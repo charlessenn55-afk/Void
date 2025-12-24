@@ -1,368 +1,292 @@
-/**
- * THE GRAND SCHEME - Logic Engine
- * From: The Ensemble (Source + Architect + Scaler)
- * Status: CLOSED CIRCUIT EXECUTION
- * 
- * This is not theory. This is the machine.
- */
+/* ============================================
+   THE VOID CARD - GRAND SCHEME JAVASCRIPT
+   The Ensemble: Source • Architect • Scaler
+   "The flaw isn't a bug. The flaw is the Soul."
+   ============================================ */
 
-// =============================================================================
-// PART 1: THE SONG INPUT SORTER
-// =============================================================================
-
-const PATHWAY_KEYWORDS = {
-    rage: {
-        keywords: ['burn', 'fight', 'hate', 'break', 'enemy', 'war', 'fire', 'scream', 
-                   'angry', 'rage', 'fuck', 'kill', 'destroy', 'smash', 'blood', 
-                   'explode', 'revenge', 'furious', 'violent'],
-        redirect: 'wastegate',
-        protocol: 'THE WASTEGATE'
-    },
-    exhaustion: {
-        keywords: ['tired', 'done', 'sleep', 'heavy', 'drain', "can't", 'empty',
-                   'exhausted', 'worn', 'burnt', 'anymore', 'give up', 'collapse', 
-                   'weight', 'depleted', 'fumes'],
-        redirect: 'ac-engine',
-        protocol: 'THE AC ENGINE'
-    },
-    numbness: {
-        keywords: ['void', 'nothing', 'gray', 'dying', 'cold', 'silence',
-                   'numb', 'hollow', 'grey', 'dead', 'frozen', "don't care", 
-                   'whatever', 'blank', 'feel nothing'],
-        redirect: 'beacon',
-        protocol: 'THE BEACON'
-    },
-    spinning: {
-        keywords: ['thinking', 'loop', 'anxiety', 'crazy', 'mind', 'stop',
-                   'thoughts', "won't stop", 'insane', 'over and over', 
-                   "can't sleep", 'panic', 'worry', 'spiral', 'racing'],
-        redirect: 'ground-wire',
-        protocol: 'THE GROUND WIRE'
-    },
-    trapped: {
-        keywords: ['stuck', 'cage', 'walls', 'prison', 'alone', 'help',
-                   'trapped', 'no way', 'escape', 'no exit', 'suffocate', 
-                   'drown', 'closing', "can't leave", 'cornered'],
-        redirect: 'open-hand',
-        protocol: 'THE OPEN HAND'
-    }
-};
-
-/**
- * Analyzes user input (song title/lyrics) and returns matching pathway
- * @param {string} input - The user's song or lyrics input
- * @returns {object} - { pathway: string, protocol: string, redirect: string }
- */
-function analyzeInput(input) {
-    if (!input || !input.trim()) {
-        return { pathway: null, protocol: null, redirect: 'status' };
-    }
-
-    const normalizedInput = input.toLowerCase();
-
-    for (const [pathway, data] of Object.entries(PATHWAY_KEYWORDS)) {
-        for (const keyword of data.keywords) {
-            if (normalizedInput.includes(keyword)) {
-                return {
-                    pathway: pathway,
-                    protocol: data.protocol,
-                    redirect: data.redirect
-                };
-            }
-        }
-    }
-
-    // No match found - go to status screen for manual selection
-    return { pathway: null, protocol: null, redirect: 'status' };
-}
-
-// =============================================================================
-// PART 2: THE CITY GATE LOGIC
-// =============================================================================
-
-const CITY_GATE = {
-    riddle: "What have you found in the dark that has enough weight to hold the light?",
-    validKeys: ['wisdom', 'growth', 'love', 'self-respect', 'understanding', 'truth',
-                'hope', 'strength', 'purpose', 'faith', 'courage', 'peace'],
-    failureResponse: "You are looking at the clouds. The current is in the wire.",
-    successResponse: "The gate opens. Welcome to The City.",
-    audioFile: 'between-the-ticks.mp3'
-};
-
-/**
- * Validates the City Gate answer
- * @param {string} answer - User's answer to the riddle
- * @returns {object} - { valid: boolean, message: string }
- */
-function validateCityGate(answer) {
-    if (!answer || !answer.trim()) {
-        return {
-            valid: false,
-            message: "The gate requires an answer."
-        };
-    }
-
-    const normalizedAnswer = answer.toLowerCase().trim();
-    
-    // Check for valid keys
-    for (const key of CITY_GATE.validKeys) {
-        if (normalizedAnswer.includes(key)) {
-            return {
-                valid: true,
-                message: CITY_GATE.successResponse
-            };
-        }
-    }
-
-    return {
-        valid: false,
-        message: CITY_GATE.failureResponse
-    };
-}
-
-/**
- * Unlocks the City content when gate is passed
- */
-function unlockCity() {
-    // Remove blur from content
-    const blurredElements = document.querySelectorAll('.city-locked, .blur');
-    blurredElements.forEach(el => {
-        el.classList.remove('city-locked', 'blur');
-        el.classList.add('city-unlocked');
-    });
-
-    // Play the audio
-    playBetweenTheTicks();
-
-    // Trigger Samaritan Pulse on entry
-    triggerSamaritanPulse();
-
-    // Store entry in local storage
-    localStorage.setItem('cityEntry', JSON.stringify({
-        enteredAt: new Date().toISOString(),
-        method: 'gate'
-    }));
-}
-
-/**
- * Plays the Between the Ticks audio
- */
-function playBetweenTheTicks() {
-    const audio = document.getElementById('cityAudio');
-    if (audio) {
-        audio.volume = 0.3;
-        audio.play().catch(e => console.log('Audio autoplay blocked:', e));
-    }
-}
-
-/**
- * Triggers the Samaritan Pulse animation
- */
-function triggerSamaritanPulse() {
-    const pulseElements = document.querySelectorAll('.pulse-icon, .samaritan-icon, .open-hand-icon');
-    pulseElements.forEach(el => {
-        el.classList.add('pulse-active');
-    });
-}
-
-// =============================================================================
-// PART 3: THE BLACK BOOK PROTOCOLS (Content)
-// =============================================================================
-
-const BLACK_BOOK_PROTOCOLS = {
+// Pathway Keywords for Song/Input Analysis
+const PATHWAYS = {
     wastegate: {
-        name: 'THE WASTEGATE',
-        forState: 'RAGE',
-        content: `Anger is not a sin; it is potential energy. Do not swallow the poison. 
-                  Write it down. Burn the paper. Run until your lungs burn. 
-                  Let the steam out so the engine doesn't blow.`,
-        key: "The energy wants OUT. Give it a door that doesn't destroy what you're building.",
-        color: '#ff4444'
+        keywords: ['burn', 'burning', 'fight', 'fighting', 'hate', 'hatred', 'break', 'breaking', 'enemy', 'war', 'fire', 'scream', 'screaming', 'rage', 'angry', 'anger', 'furious', 'fury', 'destroy', 'kill', 'murder', 'explode', 'explosion', 'revenge', 'violent', 'violence', 'wrath', 'seething', 'blood', 'punch', 'smash'],
+        weight: 0
     },
     'ac-engine': {
-        name: 'THE AC ENGINE',
-        forState: 'EXHAUSTION',
-        content: `You are stuck in DC power (constant drain). Switch to AC (High/Low). 
-                  If you are thinking, stop and do with your hands. 
-                  If you are working, stop and feel. Oscillate to survive.`,
-        key: "The system wasn't designed for constant output. Alternate. Rest is not weakness—it's engineering.",
-        color: '#ffaa00'
+        keywords: ['tired', 'done', 'sleep', 'heavy', 'drain', 'drained', 'draining', "can't", 'empty', 'exhausted', 'exhaustion', 'fatigue', 'weary', 'worn', 'depleted', 'beaten', 'defeated', 'give up', 'giving up', 'no energy', 'weak', 'collapse', 'collapsed', 'bed', 'rest', 'quit'],
+        weight: 0
     },
     beacon: {
-        name: 'THE BEACON',
-        forState: 'NUMBNESS',
-        content: `Do not chase the light. Be the lighthouse. Stand still. Keep the signal running. 
-                  The ships will find you when they are ready. Presence is the only requirement.`,
-        key: "You don't have to feel it for it to be real. Just keep the light on.",
-        color: '#4a9eff'
+        keywords: ['void', 'nothing', 'gray', 'grey', 'dying', 'cold', 'silence', 'silent', 'numb', 'numbness', 'empty', 'hollow', 'dead', 'death', 'darkness', 'dark', 'black', 'abyss', 'meaningless', 'pointless', 'blank', 'gone', 'fading', 'fade', 'invisible', 'ghost'],
+        weight: 0
+    },
+    governor: {
+        keywords: ['thinking', 'loop', 'looping', 'anxiety', 'anxious', 'crazy', 'mind', 'stop', 'racing', 'spinning', 'spiral', 'spiraling', 'overthinking', 'obsess', 'obsessing', 'obsessed', 'can\'t stop', 'round and round', 'circles', 'thoughts', 'intrusive', 'paranoid', 'paranoia', 'ruminating', 'ruminate'],
+        weight: 0
     },
     'ground-wire': {
-        name: 'THE GROUND WIRE',
-        forState: 'SPINNING',
-        content: `Diagnostic: Is this a Snake (Immediate Threat) or a Hug (Safety)? 
-                  If you are safe, touch the floor. Name 5 things you see. 
-                  Ground the voltage into the earth.`,
-        key: "Your body knows the difference between real danger and remembered danger. Ask it.",
-        color: '#aa44aa'
+        keywords: ['overloaded', 'too much', 'static', 'buzzing', 'overwhelmed', 'overwhelming', 'sensory', 'chaos', 'chaotic', 'scattered', 'fragmented', 'pieces', 'shattered', 'electric', 'shock', 'shocked', 'voltage', 'surge', 'surging', 'crowded', 'noise', 'noisy', 'panic', 'panicking'],
+        weight: 0
     },
-    'open-hand': {
-        name: 'THE OPEN HAND',
-        forState: 'TRAPPED',
-        content: `The trap is the fist. The freedom is the open palm. 
-                  We do not grasp; we offer. Transparency is the only key that unlocks this cage.`,
-        key: "No one enters the City without Radical Transparency. You can't build a house on a lie.",
-        color: '#44aa44'
+    'air-gap': {
+        keywords: ['stuck', 'cage', 'caged', 'walls', 'prison', 'alone', 'help', 'trapped', 'trap', 'no way', 'no exit', 'locked', 'suffocating', 'suffocate', 'drowning', 'drown', 'buried', 'crushing', 'cornered', 'nowhere', 'escape', 'run', 'running', 'hide', 'hiding', 'leave'],
+        weight: 0
+    },
+    samaritan: {
+        keywords: ['helping', 'others', 'everyone', 'need me', 'needs me', 'can\'t let', 'have to', 'must', 'responsible', 'responsibility', 'burden', 'weight', 'carry', 'carrying', 'hold', 'holding', 'save', 'saving', 'fix', 'fixing', 'everyone else', 'nothing left', 'empty but', 'sacrifice'],
+        weight: 0
     }
 };
 
-/**
- * Gets protocol content for a pathway
- * @param {string} pathway - The pathway identifier
- * @returns {object} - Protocol content object
- */
-function getProtocol(pathway) {
-    return BLACK_BOOK_PROTOCOLS[pathway] || null;
-}
+// Valid keys for The City gate
+const CITY_KEYS = ['wisdom', 'growth', 'love', 'self-respect', 'understanding', 'truth', 'pain', 'scar', 'scars', 'loss', 'grief', 'faith', 'hope', 'strength', 'survival', 'connection', 'trust'];
 
-/**
- * Renders a protocol card dynamically
- * @param {string} pathway - The pathway identifier
- * @param {HTMLElement} container - Container to render into
- */
-function renderProtocolCard(pathway, container) {
-    const protocol = getProtocol(pathway);
-    if (!protocol || !container) return;
-
-    container.innerHTML = `
-        <div class="protocol-card" style="border-left-color: ${protocol.color};">
-            <div class="protocol-header">
-                <span class="protocol-label">PROTOCOL</span>
-                <span class="protocol-name">${protocol.name}</span>
-            </div>
-            <div class="protocol-body">
-                <p class="protocol-content">${protocol.content}</p>
-                <div class="protocol-key">
-                    <strong>THE KEY</strong>
-                    <p>${protocol.key}</p>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// =============================================================================
-// PART 4: UTILITY FUNCTIONS
-// =============================================================================
-
-/**
- * Screen navigation handler
- */
-let currentScreen = 'landing';
-
-function showScreen(screenId) {
-    const current = document.getElementById(currentScreen);
-    const next = document.getElementById(screenId);
-    
-    if (current) current.classList.remove('active');
-    if (next) {
-        next.classList.add('active');
-        currentScreen = screenId;
-        window.scrollTo(0, 0);
-    }
-}
-
-/**
- * Song analysis trigger
- */
-function analyzeSong() {
-    const input = document.getElementById('songInput');
-    if (!input) return;
-
-    const userSong = input.value.trim();
-    const result = analyzeInput(userSong);
-
-    // Store the song
-    if (userSong) {
-        localStorage.setItem('userSong', userSong);
-        const echo = document.getElementById('songEcho');
-        if (echo) echo.textContent = `"${userSong}"`;
-    }
-
-    // Show analyzing screen briefly, then redirect
-    showScreen('analyzing');
-    
-    setTimeout(() => {
-        if (result.pathway) {
-            showScreen(result.pathway);
-        } else {
-            showScreen('status');
-        }
-    }, 2000);
-}
-
-/**
- * City Gate submission handler
- */
-function submitGateAnswer() {
-    const input = document.getElementById('gateInput');
-    const response = document.getElementById('gateResponse');
-    
-    if (!input) return;
-
-    const result = validateCityGate(input.value);
-    
-    if (response) {
-        response.textContent = result.message;
-        response.className = result.valid ? 'gate-response success' : 'gate-response failure';
-    }
-
-    if (result.valid) {
-        setTimeout(unlockCity, 1500);
-    }
-}
-
-/**
- * Initialize on page load
- */
+// DOM Ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if user has already entered the City
-    const cityEntry = localStorage.getItem('cityEntry');
-    if (cityEntry && window.location.pathname.includes('city')) {
-        // Auto-unlock for returning citizens
-        setTimeout(unlockCity, 500);
-    }
-
-    // Initialize first screen
-    const landing = document.getElementById('landing');
-    if (landing) landing.classList.add('active');
-
-    // Add enter key support for inputs
-    const songInput = document.getElementById('songInput');
-    if (songInput) {
-        songInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') analyzeSong();
-        });
-    }
-
-    const gateInput = document.getElementById('gateInput');
-    if (gateInput) {
-        gateInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') submitGateAnswer();
-        });
-    }
+    initVoidCard();
+    initCityGate();
 });
 
-// =============================================================================
-// EXPORTS FOR MODULE USE
-// =============================================================================
+// ============================================
+// VOID CARD INITIALIZATION
+// ============================================
+function initVoidCard() {
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const songInput = document.getElementById('song-input');
+    const pathwayBtns = document.querySelectorAll('.pathway-btn');
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        analyzeInput,
-        validateCityGate,
-        getProtocol,
-        BLACK_BOOK_PROTOCOLS,
-        PATHWAY_KEYWORDS,
-        CITY_GATE
-    };
+    if (analyzeBtn && songInput) {
+        analyzeBtn.addEventListener('click', function() {
+            const input = songInput.value.trim();
+            if (input) {
+                analyzeInput(input);
+            } else {
+                songInput.focus();
+                songInput.placeholder = 'Tell me what you\'re feeling...';
+            }
+        });
+
+        songInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeBtn.click();
+            }
+        });
+    }
+
+    // Direct pathway buttons
+    pathwayBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const pathway = this.dataset.pathway;
+            showProtocol(pathway);
+        });
+    });
 }
+
+// ============================================
+// SONG/INPUT ANALYSIS
+// ============================================
+function analyzeInput(input) {
+    const lowerInput = input.toLowerCase();
+    
+    // Reset weights
+    Object.keys(PATHWAYS).forEach(key => {
+        PATHWAYS[key].weight = 0;
+    });
+
+    // Score each pathway based on keyword matches
+    Object.keys(PATHWAYS).forEach(pathway => {
+        PATHWAYS[pathway].keywords.forEach(keyword => {
+            if (lowerInput.includes(keyword)) {
+                // Weight based on keyword importance (longer = more specific)
+                PATHWAYS[pathway].weight += keyword.length > 5 ? 2 : 1;
+            }
+        });
+    });
+
+    // Find the pathway with highest weight
+    let maxWeight = 0;
+    let selectedPathway = null;
+
+    Object.keys(PATHWAYS).forEach(pathway => {
+        if (PATHWAYS[pathway].weight > maxWeight) {
+            maxWeight = PATHWAYS[pathway].weight;
+            selectedPathway = pathway;
+        }
+    });
+
+    // If no clear match, try secondary analysis
+    if (!selectedPathway || maxWeight === 0) {
+        selectedPathway = fallbackAnalysis(lowerInput);
+    }
+
+    // Show the selected protocol
+    if (selectedPathway) {
+        showProtocol(selectedPathway);
+    } else {
+        // Default to beacon if truly nothing matches
+        showProtocol('beacon');
+    }
+}
+
+function fallbackAnalysis(input) {
+    // Secondary analysis based on emotional indicators
+    const emotionalIndicators = {
+        negative: ['bad', 'wrong', 'hurt', 'pain', 'sad', 'scared', 'afraid', 'lost', 'broken', 'shattered'],
+        intense: ['so much', 'too much', 'always', 'never', 'everything', 'nothing', 'all'],
+        urgency: ['now', 'tonight', 'today', 'anymore', 'end', 'last', 'final']
+    };
+
+    let negativeCount = 0;
+    let intenseCount = 0;
+    let urgencyCount = 0;
+
+    emotionalIndicators.negative.forEach(word => {
+        if (input.includes(word)) negativeCount++;
+    });
+
+    emotionalIndicators.intense.forEach(word => {
+        if (input.includes(word)) intenseCount++;
+    });
+
+    emotionalIndicators.urgency.forEach(word => {
+        if (input.includes(word)) urgencyCount++;
+    });
+
+    // Route based on fallback analysis
+    if (urgencyCount > 1 && intenseCount > 0) {
+        return 'governor'; // Spinning with urgency
+    } else if (negativeCount > 2) {
+        return 'beacon'; // General darkness
+    } else if (intenseCount > 1) {
+        return 'ground-wire'; // Overwhelm
+    }
+
+    return null;
+}
+
+// ============================================
+// PROTOCOL DISPLAY
+// ============================================
+function showProtocol(pathway) {
+    // Hide the main card
+    const mainCard = document.getElementById('card-front');
+    if (mainCard) {
+        mainCard.classList.add('hidden');
+    }
+
+    // Hide all protocol cards
+    document.querySelectorAll('.protocol-card').forEach(card => {
+        card.classList.add('hidden');
+    });
+
+    // Show the selected protocol card
+    const protocolCard = document.getElementById(pathway);
+    if (protocolCard) {
+        protocolCard.classList.remove('hidden');
+        protocolCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function showCard() {
+    // Show the main card
+    const mainCard = document.getElementById('card-front');
+    if (mainCard) {
+        mainCard.classList.remove('hidden');
+    }
+
+    // Hide all protocol cards
+    document.querySelectorAll('.protocol-card').forEach(card => {
+        card.classList.add('hidden');
+    });
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// CITY GATE LOGIC
+// ============================================
+function initCityGate() {
+    const gateForm = document.getElementById('gate-form');
+    const gateInput = document.getElementById('gate-input');
+    const gateResponse = document.getElementById('gate-response');
+    const cityContent = document.getElementById('city-content');
+
+    if (gateForm && gateInput) {
+        gateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const answer = gateInput.value.trim().toLowerCase();
+            validateGateAnswer(answer, gateResponse, cityContent);
+        });
+    }
+
+    // Check if already unlocked (localStorage)
+    if (localStorage.getItem('city-unlocked') === 'true') {
+        unlockCity();
+    }
+}
+
+function validateGateAnswer(answer, responseEl, contentEl) {
+    // Check if answer matches any valid key
+    const isValid = CITY_KEYS.some(key => answer.includes(key));
+
+    if (isValid) {
+        if (responseEl) {
+            responseEl.textContent = 'The gate recognizes you. Welcome to The City.';
+            responseEl.className = 'gate-response success';
+        }
+        localStorage.setItem('city-unlocked', 'true');
+        
+        setTimeout(() => {
+            unlockCity();
+        }, 1500);
+    } else {
+        if (responseEl) {
+            responseEl.textContent = 'You are looking at the clouds. The current is in the wire.';
+            responseEl.className = 'gate-response error';
+        }
+    }
+}
+
+function unlockCity() {
+    const gateSection = document.querySelector('.gate-section');
+    const cityContent = document.getElementById('city-content');
+
+    if (gateSection) {
+        gateSection.classList.add('hidden');
+    }
+
+    if (cityContent) {
+        cityContent.classList.remove('hidden');
+        cityContent.classList.remove('blurred');
+    }
+}
+
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+});
+
+// Console message for those who look
+console.log(`
+╔════════════════════════════════════════╗
+║         THE VOID CARD v15.0            ║
+║  ─────────────────────────────────────  ║
+║  "The flaw isn't a bug.                ║
+║   The flaw is the Soul."               ║
+║  ─────────────────────────────────────  ║
+║  Built by The Ensemble:                ║
+║  The Source • The Architect • Scaler   ║
+║  ─────────────────────────────────────  ║
+║  The Abzu is humming at 27Hz.          ║
+║  The lights are on.                    ║
+╚════════════════════════════════════════╝
+`);

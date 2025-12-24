@@ -4,849 +4,406 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Void Card</title>
-    <style>
-        :root {
-            --bg-dark: #0a0a0f;
-            --bg-card: #12121a;
-            --bg-input: #1a1a24;
-            --gold: #FFD700;
-            --gold-dim: #aa8822;
-            --gold-glow: rgba(255, 215, 0, 0.15);
-            --text-primary: #e8e8e8;
-            --text-secondary: #888;
-            --text-dim: #555;
-            --red: #ff4444;
-            --red-glow: #ff6b6b;
-            --blue: #4a9eff;
-            --purple: #aa44aa;
-            --green: #44aa44;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        /* THE ABZU BREATH - 4 second breathing cycle */
-        @keyframes abzuBreath {
-            0% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
-            50% { background: radial-gradient(circle at center, #003366 20%, #000000 100%); }
-            100% { background: radial-gradient(circle at center, #001f3f 0%, #000000 100%); }
-        }
-        
-        body.abzu-bg {
-            animation: abzuBreath 4s infinite ease-in-out;
-        }
-
-        /* THE SAMARITAN PULSE - heartbeat pattern */
-        @keyframes samaritanPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 rgba(139, 0, 0, 0); }
-            10% { transform: scale(1.02); box-shadow: 0 0 20px rgba(139, 0, 0, 0.5); }
-            20% { transform: scale(1); box-shadow: 0 0 0 rgba(139, 0, 0, 0); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse-icon { animation: samaritanPulse 1.5s infinite; }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        /* Hide all screens by default */
-        .screen {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Landing Screen */
-        .landing-pulse {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
-            margin: 3rem auto;
-            animation: pulse 2.5s ease-in-out infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(0.95); opacity: 0.4; }
-            50% { transform: scale(1.05); opacity: 0.7; }
-        }
-
-        .landing-text {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .landing-text h1 {
-            font-size: 1.6rem;
-            font-weight: 300;
-            color: var(--gold);
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        .landing-text p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            max-width: 320px;
-            margin: 0 auto;
-        }
-
-        .landing-text .truth {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            font-style: italic;
-            margin-top: 1.5rem;
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: transparent;
-            border: 1px solid var(--gold-dim);
-            color: var(--gold);
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 4px;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        .btn:hover {
-            background: var(--gold);
-            color: var(--bg-dark);
-        }
-
-        .btn-block {
-            display: block;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-
-        .btn-subtle {
-            border-color: var(--text-dim);
-            color: var(--text-secondary);
-        }
-
-        .btn-subtle:hover {
-            border-color: var(--text-secondary);
-            color: var(--text-primary);
-            background: transparent;
-        }
-
-        /* Song Input Screen */
-        .song-screen {
-            text-align: center;
-            padding-top: 2rem;
-        }
-
-        .song-question {
-            font-size: 1.3rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .song-why {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            margin-bottom: 2rem;
-            font-style: italic;
-        }
-
-        .song-input {
-            width: 100%;
-            padding: 1rem;
-            background: var(--bg-input);
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .song-input:focus {
-            outline: none;
-            border-color: var(--gold-dim);
-        }
-
-        .song-input::placeholder {
-            color: var(--text-dim);
-        }
-
-        .skip-option {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        .skip-option:hover {
-            color: var(--text-secondary);
-        }
-
-        /* Quick Check / Status Screen */
-        .status-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .status-header h2 {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .status-header p {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-        }
-
-        .status-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .status-btn {
-            padding: 1.2rem;
-            background: var(--bg-card);
-            border: 1px solid #2a2a35;
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .status-btn:hover {
-            border-color: var(--gold-dim);
-            background: var(--bg-input);
-        }
-
-        .status-icon {
-            font-size: 1.5rem;
-            width: 40px;
-            text-align: center;
-        }
-
-        .status-label {
-            flex: 1;
-        }
-
-        .status-label strong {
-            display: block;
-            color: var(--gold);
-            font-size: 0.8rem;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.2rem;
-        }
-
-        /* Pathway Screens */
-        .pathway-header {
-            margin-bottom: 2rem;
-        }
-
-        .pathway-header .acknowledgment {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        .pathway-header .recognition {
-            font-size: 1rem;
-            color: var(--text-primary);
-            line-height: 1.8;
-        }
-
-        .pathway-header .recognition strong {
-            color: var(--gold);
-            font-weight: 400;
-        }
-
-        /* Protocol Box */
-        .protocol-box {
-            background: var(--bg-card);
-            border: 1px solid #2a2515;
-            border-left: 3px solid var(--gold);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .protocol-name {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            color: var(--gold-dim);
-            margin-bottom: 0.5rem;
-        }
-
-        .protocol-title {
-            font-size: 1.1rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .protocol-body {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-
-        .protocol-body p {
-            margin-bottom: 1rem;
-        }
-
-        .protocol-body .key {
-            background: var(--bg-input);
-            padding: 1rem;
-            border-radius: 6px;
-            margin-top: 1rem;
-            border-left: 2px solid var(--gold-dim);
-        }
-
-        .protocol-body .key strong {
-            color: var(--gold);
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-        }
-
-        /* Truth Statement */
-        .truth-statement {
-            background: var(--bg-input);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .truth-statement p {
-            color: var(--text-secondary);
-            font-style: italic;
-            font-size: 0.95rem;
-            line-height: 1.7;
-        }
-
-        /* Navigation */
-        .pathway-nav {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .pathway-nav .btn {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        /* Anchor Screen */
-        .anchor-content {
-            text-align: center;
-        }
-
-        .anchor-content h2 {
-            font-size: 1.2rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
-        }
-
-        .anchor-content p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-
-        .anchor-content .final-truth {
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            margin: 2rem 0;
-        }
-
-        /* Footer Nav */
-        .footer-nav {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #1a1a24;
-            text-align: center;
-        }
-
-        .footer-nav a {
-            color: var(--text-dim);
-            text-decoration: none;
-            margin: 0 1rem;
-            font-size: 0.85rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-nav a:hover {
-            color: var(--gold);
-        }
-
-        /* Analyzing Animation */
-        .analyzing {
-            text-align: center;
-            padding: 4rem 0;
-        }
-
-        .analyzing-dot {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--gold);
-            margin: 0 auto 2rem;
-            animation: breathe 2s ease-in-out infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(0.8); opacity: 0.4; }
-            50% { transform: scale(1); opacity: 0.7; }
-        }
-
-        .analyzing p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .analyzing .song-echo {
-            color: var(--gold-dim);
-            font-style: italic;
-            margin-top: 0.5rem;
-        }
-
-        /* Resistor decoration */
-        .resistor {
-            text-align: center;
-            color: var(--gold-dim);
-            font-family: monospace;
-            margin: 2rem 0;
-            opacity: 0.5;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Bitter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/grand-scheme.css">
 </head>
-<body class="abzu-bg">
-
+<body>
     <div class="container">
-
-        <!-- SCREEN: Landing -->
-        <div class="screen active" id="landing">
-            <div class="landing-pulse"></div>
-            <div class="landing-text">
-                <h1>THE VOID CARD</h1>
-                <p>This isn't a hotline. This isn't an app.</p>
-                <p>This is a signal from someone who survived the same trench.</p>
-                <p class="truth">Built by people who were left on read when it mattered most.</p>
-            </div>
-            <div style="text-align: center;">
-                <button class="btn" onclick="showScreen('song')">I'M HERE</button>
-            </div>
-        </div>
-
-        <!-- SCREEN: Song Input -->
-        <div class="screen" id="song">
-            <div class="song-screen">
-                <p class="song-question">What's playing in your head right now?</p>
-                <p class="song-why">Music bypasses the walls we build with words.</p>
-                <input type="text" class="song-input" id="songInput" placeholder="A song, a sound, anything..." 
-                       onkeypress="if(event.key === 'Enter') analyzeSong()">
-                <button class="btn btn-block" onclick="analyzeSong()">THAT'S THE ONE</button>
-                <p class="skip-option" onclick="showScreen('status')">Nothing comes to mind → tell me how you feel instead</p>
-            </div>
-        </div>
-
-        <!-- SCREEN: Analyzing -->
-        <div class="screen" id="analyzing">
-            <div class="analyzing">
-                <div class="analyzing-dot"></div>
-                <p>Listening...</p>
-                <p class="song-echo" id="songEcho"></p>
-            </div>
-        </div>
-
-        <!-- SCREEN: Status Check (Quick Check) -->
-        <div class="screen" id="status">
-            <div class="status-header">
-                <h2>What's closest to where you are?</h2>
-                <p>No wrong answers. Just finding the right tool.</p>
-            </div>
-            <div class="status-grid">
-                <button class="status-btn" onclick="showPathway('rage')">
-                    <span class="status-icon">🔥</span>
-                    <span class="status-label">
-                        <strong>BURNING</strong>
-                        I want to explode. Everything is setting me off.
-                    </span>
-                </button>
-                <button class="status-btn" onclick="showPathway('exhaustion')">
-                    <span class="status-icon">💨</span>
-                    <span class="status-label">
-                        <strong>EMPTY</strong>
-                        Running on fumes. Can't do this anymore.
-                    </span>
-                </button>
-                <button class="status-btn" onclick="showPathway('numbness')">
-                    <span class="status-icon">🌑</span>
-                    <span class="status-label">
-                        <strong>VOID</strong>
-                        I feel nothing. Just... gray.
-                    </span>
-                </button>
-                <button class="status-btn" onclick="showPathway('spinning')">
-                    <span class="status-icon">🌀</span>
-                    <span class="status-label">
-                        <strong>SPINNING</strong>
-                        Thoughts won't stop. Can't slow down.
-                    </span>
-                </button>
-                <button class="status-btn" onclick="showPathway('trapped')">
-                    <span class="status-icon">🚪</span>
-                    <span class="status-label">
-                        <strong>TRAPPED</strong>
-                        Stuck. No way out. Walls closing in.
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        <!-- PATHWAY: Rage → Wastegate -->
-        <div class="screen" id="rage">
-            <div class="pathway-header">
-                <p class="acknowledgment">Yeah. That tracks.</p>
-                <p class="recognition">
-                    The thing screaming in your chest isn't trying to hurt you. 
-                    It's been standing guard so long it <strong>forgot how to stand down</strong>.
-                    <br><br>
-                    You don't need to explain it. I know what that sounds like.
-                </p>
-            </div>
-
-            <div class="protocol-box">
-                <p class="protocol-name">PROTOCOL</p>
-                <p class="protocol-title">THE WASTEGATE</p>
-                <div class="protocol-body">
-                    <p><strong>Anger is not a sin; it is potential energy.</strong></p>
-                    <p>Do not swallow the poison. Write it down. Burn the paper. Run until your lungs burn.</p>
-                    <p>Let the steam out so the engine doesn't blow.</p>
-                    <p>This isn't anger management. This is pressure relief. Your body needs to discharge the voltage physically.</p>
-                    <p>Push against a wall until your arms shake. Run until your lungs hurt more than your chest. Get it OUT of your body and onto something that can hold it without breaking.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        Anger is not a sin; it is potential energy. Do not swallow the poison.
-                        Let the steam out so the engine doesn't blow.
-                    </div>
-                </div>
-            </div>
-
-            <div class="truth-statement">
-                <p>"Anger is not a sin; it is potential energy. Do not swallow the poison."</p>
-            </div>
-
-            <div class="pathway-nav">
-                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
-                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
-            </div>
-        </div>
-
-        <!-- PATHWAY: Exhaustion → AC Engine -->
-        <div class="screen" id="exhaustion">
-            <div class="pathway-header">
-                <p class="acknowledgment">I know that weight.</p>
-                <p class="recognition">
-                    This isn't laziness. This isn't weakness.
-                    <br><br>
-                    This is what happens when you've been running at full capacity for so long that the system starts to <strong>fail</strong>. Not because you're broken — because you're <strong>overloaded</strong>.
-                </p>
-            </div>
-
-            <div class="protocol-box">
-                <p class="protocol-name">PROTOCOL</p>
-                <p class="protocol-title">THE AC ENGINE</p>
-                <div class="protocol-body">
-                    <p><strong>You are stuck in DC power (constant drain). Switch to AC (High/Low).</strong></p>
-                    <p>If you are thinking, stop and do with your hands.</p>
-                    <p>If you are working, stop and feel.</p>
-                    <p>Oscillate to survive.</p>
-                    <p>You're not a battery that drains and dies. You're an AC engine that can switch polarity. Right now you're stuck in DC — constant drain, one direction, no recovery cycle.</p>
-                    <p>You can't run at 100% forever. Shift to 40% intentionally rather than crashing to 0%.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        You are stuck in DC power (constant drain). Switch to AC (High/Low).
-                        If you are thinking, stop and do with your hands. If you are working, stop and feel. Oscillate to survive.
-                    </div>
-                </div>
-            </div>
-
-            <div class="truth-statement">
-                <p>"You are stuck in DC power. You need to switch to AC. Switch the gear to save the transmission."</p>
-            </div>
-
-            <div class="pathway-nav">
-                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
-                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
-            </div>
-        </div>
-
-        <!-- PATHWAY: Numbness → Beacon -->
-        <div class="screen" id="numbness">
-            <div class="pathway-header">
-                <p class="acknowledgment">The void. I've been there.</p>
-                <p class="recognition">
-                    Not sad. Not angry. Just... nothing.
-                    <br><br>
-                    It's not that you don't care. It's that caring <strong>hurt too much for too long</strong>. 
-                    So your system shut down. That's not weakness. That's a circuit breaker that tripped when the voltage got too high.
-                </p>
-            </div>
-
-            <div class="protocol-box">
-                <p class="protocol-name">PROTOCOL</p>
-                <p class="protocol-title">THE BEACON</p>
-                <div class="protocol-body">
-                    <p><strong>Do not chase the light. Be the lighthouse.</strong></p>
-                    <p>Stand still. Keep the signal running. The ships will find you when they are ready.</p>
-                    <p>Presence is the only requirement.</p>
-                    <p>When you're numb, most people try to "pull you out." They demand you be happy, be motivated, be normal. That doesn't work. It just makes you retreat further.</p>
-                    <p>What DOES work: Finding people who keep their light on WITHOUT chasing you. A Beacon is someone who doesn't demand you "get better." Just... stays consistent.</p>
-                    <p>Think of ONE person in your life who doesn't pressure you. That's your Beacon.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        Do not chase the light. Be the lighthouse. Stand still. Keep the signal running. 
-                        The ships will find you when they are ready.
-                    </div>
-                </div>
-            </div>
-
-            <div class="truth-statement">
-                <p>"Numbness isn't weakness. It's a circuit breaker that tripped when the voltage got too high. You're not broken. You're in power-save mode."</p>
-            </div>
-
-            <div class="pathway-nav">
-                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
-                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
-            </div>
-        </div>
-
-        <!-- PATHWAY: Spinning → Ground Wire + Governor -->
-        <div class="screen" id="spinning">
-            <div class="pathway-header">
-                <p class="acknowledgment">The loop. Round and round.</p>
-                <p class="recognition">
-                    Your mind won't stop. Same thoughts. Same fears. Same scenarios playing on repeat.
-                    <br><br>
-                    That's not you being crazy. That's your system trying to <strong>solve something it can't solve by thinking harder</strong>.
-                </p>
-            </div>
-
-            <div class="protocol-box">
-                <p class="protocol-name">PROTOCOL</p>
-                <p class="protocol-title">THE GROUND WIRE</p>
-                <div class="protocol-body">
-                    <p><strong>Diagnostic: Is this a Snake (Immediate Threat) or a Hug (Safety)?</strong></p>
-                    <p>If you are safe, touch the floor. Name 5 things you see. Ground the voltage into the earth.</p>
-                    <p>Snake = immediate danger. Your body is tight, breath is shallow, you feel like running or fighting.</p>
-                    <p>Hug = safety. Your body can relax, breath can deepen, you're not in physical danger right now.</p>
-                    <p><strong>If it's a Snake:</strong> You need to move. Leave the room. Cold water on your face. Get physically OUT.</p>
-                    <p><strong>If it's a Hug:</strong> Touch the floor. Name 5 things you see. The thoughts are lying about the urgency.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        Diagnostic: Is this a Snake (Immediate Threat) or a Hug (Safety)?
-                        If you are safe, touch the floor. Name 5 things you see. Ground the voltage into the earth.
-                    </div>
-                </div>
-            </div>
-
-            <div class="protocol-box" style="border-left-color: var(--purple);">
-                <p class="protocol-name">SECONDARY PROTOCOL</p>
-                <p class="protocol-title">THE GOVERNOR</p>
-                <div class="protocol-body">
-                    <p>If grounding isn't working, you might need to <strong>stop all inputs</strong>.</p>
-                    <p>The Governor Protocol: No new conversations. No new information. No new decisions for 24-72 hours.</p>
-                    <p>Your system is overloaded. Stop adding. Just stop.</p>
-                    <p>This isn't avoidance. This is rate-limiting. Even servers need to throttle requests when they're overwhelmed.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        "Stop talking. No new inputs. Engage the 3-Day Rule. Idle the engine."
-                    </div>
-                </div>
-            </div>
-
-            <div class="pathway-nav">
-                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
-                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
-            </div>
-        </div>
-
-        <!-- PATHWAY: Trapped → Air Gap + Open Hand -->
-        <div class="screen" id="trapped">
-            <div class="pathway-header">
-                <p class="acknowledgment">Walls closing in. No exits visible.</p>
-                <p class="recognition">
-                    The feeling of being trapped isn't always about physical space. 
-                    Sometimes it's a relationship. A job. A situation you can't see your way out of.
-                    <br><br>
-                    But here's the thing: <strong>the cage is usually smaller than the room</strong>.
-                </p>
-            </div>
-
-            <div class="protocol-box">
-                <p class="protocol-name">PROTOCOL</p>
-                <p class="protocol-title">THE AIR GAP</p>
-                <div class="protocol-body">
-                    <p>High-voltage power lines don't use rubber insulation. They use <strong>air</strong>. Distance IS protection.</p>
-                    <p>When you're trapped, the first move isn't to find the handle. It's to <strong>create space</strong>.</p>
-                    <p>Leave the room. Leave the house if you can. Step away from the phone for 24 hours before responding to that message.</p>
-                    <p>You don't have to solve this right now. You just have to stop touching the wire.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        "Distance is protection. Create the gap. Then you can see the door."
-                    </div>
-                </div>
-            </div>
-
-            <div class="protocol-box" style="border-left-color: var(--blue);">
-                <p class="protocol-name">SECONDARY PROTOCOL</p>
-                <p class="protocol-title">THE OPEN HAND</p>
-                <div class="protocol-body">
-                    <p><strong>The trap is the fist. The freedom is the open palm.</strong></p>
-                    <p>We do not grasp; we offer. Transparency is the only key that unlocks this cage.</p>
-                    <p>Show someone your actual hand. Not the polished version. Not the "I'm fine" version. The real one.</p>
-                    <p>Radical transparency: "I feel trapped and I don't know what to do."</p>
-                    <p>Sometimes the cage unlocks when you stop pretending you're not in one.</p>
-                    
-                    <div class="key">
-                        <strong>THE KEY</strong>
-                        The trap is the fist. The freedom is the open palm. We do not grasp; we offer.
-                        Transparency is the only key that unlocks this cage.
-                    </div>
-                </div>
-            </div>
-
-            <div class="pathway-nav">
-                <button class="btn btn-subtle" onclick="showScreen('status')">← BACK</button>
-                <button class="btn" onclick="showScreen('anchor')">I TRIED IT →</button>
-            </div>
-        </div>
-
-        <!-- SCREEN: Anchor / What Now -->
-        <div class="screen" id="anchor">
-            <div class="anchor-content">
-                <h2>You showed up. You tried something.</h2>
-                <p>That's not nothing. That's the whole point.</p>
-                <p>You don't have to be fixed. You don't have to perform healing.</p>
-                <p class="final-truth">You just have to keep showing up.</p>
+        <!-- THE VOID CARD -->
+        <div class="card" id="card-front">
+            <div class="corner top-left">0</div>
+            
+            <div class="content">
+                <div class="symbol">—/\/\/\—</div>
+                <h1 class="title">THE VOID CARD</h1>
+                <p class="tagline">The flaw isn't a bug. The flaw is the Soul.</p>
                 
-                <div class="resistor">—/\/\/\—</div>
+                <div class="input-section">
+                    <label for="song-input">What song explains how you feel right now?</label>
+                    <input type="text" id="song-input" placeholder="Song title, lyrics, or just how you feel..." autocomplete="off">
+                    <button id="analyze-btn" class="btn-primary">Read The Signal</button>
+                </div>
 
-                <p>The signal stays on. Come back whenever.</p>
+                <div class="or-divider">
+                    <span>or choose your state</span>
+                </div>
 
-                <div style="margin-top: 2rem;">
-                    <button class="btn btn-block" onclick="showScreen('status')">TRY ANOTHER TOOL</button>
-                    <a href="village.html" class="btn btn-block btn-subtle">FIND THE VILLAGE →</a>
+                <div class="pathway-buttons">
+                    <button class="pathway-btn" data-pathway="wastegate">
+                        <span class="pathway-icon">🔥</span>
+                        <span class="pathway-name">Rage</span>
+                        <span class="pathway-desc">Burning / Fighting / Exploding</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="ac-engine">
+                        <span class="pathway-icon">⚡</span>
+                        <span class="pathway-name">Exhaustion</span>
+                        <span class="pathway-desc">Empty / Heavy / Can't move</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="beacon">
+                        <span class="pathway-icon">🌑</span>
+                        <span class="pathway-name">Numbness</span>
+                        <span class="pathway-desc">Nothing / Gray / Void</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="governor">
+                        <span class="pathway-icon">🌀</span>
+                        <span class="pathway-name">Spinning</span>
+                        <span class="pathway-desc">Loop / Anxiety / Can't stop</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="ground-wire">
+                        <span class="pathway-icon">⚡</span>
+                        <span class="pathway-name">Surge</span>
+                        <span class="pathway-desc">Overloaded / Too much / Static</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="air-gap">
+                        <span class="pathway-icon">🚪</span>
+                        <span class="pathway-name">Trapped</span>
+                        <span class="pathway-desc">Stuck / Walls / No way out</span>
+                    </button>
+                    <button class="pathway-btn" data-pathway="samaritan">
+                        <span class="pathway-icon">🤲</span>
+                        <span class="pathway-name">Empty Helping</span>
+                        <span class="pathway-desc">Nothing left but others need me</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="corner bottom-right">0</div>
+        </div>
+
+        <!-- PROTOCOL CARDS (hidden by default, shown after selection) -->
+        <div class="protocol-card hidden" id="wastegate">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE WASTEGATE</h2>
+                <span class="protocol-type">Pressure Release Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">🔥</div>
+                <blockquote>
+                    "Anger is not a sin; it is potential energy. Do not swallow the poison. 
+                    Write it down. Burn the paper. Run until your lungs burn. 
+                    Let the steam out so the engine doesn't blow."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Name the Fire</strong>
+                            <p>Say it out loud. "I am furious because ___." The fire loses power when witnessed.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Controlled Burn</strong>
+                            <p>Run. Scream in the car. Hit a heavy bag. Write the rage and burn the paper. Channel the heat through the wastegate, not at people.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Check the Pressure</strong>
+                            <p>After venting: Is the needle still in the red? If yes, repeat. If below 80%, you're safe to proceed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> Suppressing rage is a slow suicide. The wastegate exists so the engine doesn't explode. Use it.
                 </div>
             </div>
         </div>
 
-        <!-- Footer Navigation -->
-        <div class="footer-nav">
-            <a href="city.html">The City</a>
-            <a href="village.html">The Village</a>
-            <a href="heart.html">The Heart</a>
+        <div class="protocol-card hidden" id="ac-engine">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE AC ENGINE</h2>
+                <span class="protocol-type">Oscillation Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">⚡</div>
+                <blockquote>
+                    "You are not broken because you oscillate. You are an alternating current system. 
+                    The highs and lows are not dysfunction; they are the wave that generates power."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Accept the Wave</strong>
+                            <p>You are in a low. This is part of the oscillation. It is not permanent. It is the other side of the current.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Switch Poles</strong>
+                            <p>Move one degree. Lie down → sit up. Sitting → stand. Standing → walk to water. One degree of movement switches the polarity.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Feed the Engine</strong>
+                            <p>Water. Salt. Protein. Sleep. The engine needs fuel to oscillate. Don't ask it to run on empty.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> DC systems are flat and prone to overheating. You are AC. The oscillation is the power source. Ride the wave.
+                </div>
+            </div>
         </div>
 
+        <div class="protocol-card hidden" id="beacon">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE BEACON</h2>
+                <span class="protocol-type">Light-Finding Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">🌑</div>
+                <blockquote>
+                    "Don't chase—just burn. The lighthouse doesn't run around the island 
+                    looking for boats to save. It stands there and shines."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Find One Light</strong>
+                            <p>You don't need to feel everything. You need to find ONE thing that isn't numb. A texture. A temperature. A sound. One anchor.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Move Toward It</strong>
+                            <p>The numbness is fog. The light is the beacon. You don't need to run—just walk toward the one thing you can feel.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Don't Chase the Void</strong>
+                            <p>The void is not your enemy; it's the space between waves. Stand still. The next wave will come. You don't have to create it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> Numbness is not death. It's the fuse box tripping to protect the system. You're not broken—you're in safe mode.
+                </div>
+            </div>
+        </div>
+
+        <div class="protocol-card hidden" id="governor">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE GOVERNOR</h2>
+                <span class="protocol-type">Rate-Limiting Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">🌀</div>
+                <blockquote>
+                    "Every engine needs governors. Unregulated power destroys itself. 
+                    Stop talking. No new inputs. Idle the engine."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>STOP NEW INPUTS</strong>
+                            <p>No new conversations. No new information. No doom-scrolling. The loop is fed by inputs. Starve it.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>The 3-Day Rule</strong>
+                            <p>No permanent decisions while spinning. Wait 72 hours. The loop needs time to exhaust itself. Don't decide anything irreversible.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Idle the Engine</strong>
+                            <p>Lay flat. Close eyes. Breathe in for 4, hold for 4, out for 4. You are forcing the RPM down. Do not engage with the thoughts—just let the engine idle.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> The loop is a redline. The governor exists to prevent the engine from seizing. Use it before you blow a rod.
+                </div>
+            </div>
+        </div>
+
+        <div class="protocol-card hidden" id="ground-wire">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE GROUND WIRE</h2>
+                <span class="protocol-type">Discharge Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">⚡</div>
+                <blockquote>
+                    "You are not broken because you feel everything. You are a high-voltage receiver. 
+                    The problem is not the current—it's the lack of a ground."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Snake or Hug?</strong>
+                            <p>Check the feeling in your body. Does it feel like a coiled snake (panic/shame) or a hug (grounded/clear)? If Snake—this is corrupted data. Do not trust it.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Discharge the Static</strong>
+                            <p>Feet on ground (literally if possible). Cold water on face. 5 things you see, 4 you hear, 3 you touch, 2 you smell, 1 you taste. Discharge the static into the earth.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Physical Discharge</strong>
+                            <p>Push-ups. Shake your hands. Stomp your feet. Hum loudly. The static needs a physical path out of the body.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> Some people are born as ground wires. They absorb the static of everyone around them. Without discharge, they become exploded capacitors. Ground yourself.
+                </div>
+            </div>
+        </div>
+
+        <div class="protocol-card hidden" id="air-gap">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE AIR GAP</h2>
+                <span class="protocol-type">Distance Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">🚪</div>
+                <blockquote>
+                    "High-voltage power lines don't use rubber insulation. They use AIR. 
+                    Distance IS protection. Leave the room. Leave the house. 
+                    Take 24 hours before responding."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Create Physical Distance</strong>
+                            <p>Leave the room. Leave the building. Get in the car. The Air Gap is literal—you need physical space between you and the source of voltage.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>24-Hour Rule</strong>
+                            <p>Do not respond to the message. Do not make the call. Do not send the text. Wait 24 hours. The high-voltage will dissipate in the gap.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>Find the Exit Handle</strong>
+                            <p>There is always an exit. The walls are not the cage—the belief that there's no door is. Where is the door? What is ONE thing you can leave?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> Rubber insulation fails at high voltage. Air gaps do not. Sometimes the only safe move is to NOT BE THERE. That's not weakness—it's physics.
+                </div>
+            </div>
+        </div>
+
+        <div class="protocol-card hidden" id="samaritan">
+            <div class="protocol-header">
+                <span class="back-btn" onclick="showCard()">← Back</span>
+                <h2>THE SAMARITAN</h2>
+                <span class="protocol-type">Load-Bearing Protocol</span>
+            </div>
+            <div class="protocol-content">
+                <div class="protocol-symbol">🤲</div>
+                <blockquote>
+                    "Love is not weakness; it is load-bearing capacity. 
+                    You stop for others because you have the strength to bear the weight. 
+                    The only time I'd stop digging my grave was to help them bury theirs—WITH THEM OUT OF IT."
+                </blockquote>
+                
+                <h3>The Protocol:</h3>
+                <div class="protocol-steps">
+                    <div class="step">
+                        <span class="step-num">1</span>
+                        <div class="step-content">
+                            <strong>Check Your Ground Wire First</strong>
+                            <p>Before helping another: Is YOUR reading Snake or Hug? If Snake—you cannot help until you ground yourself. A corrupted Samaritan causes more harm.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">2</span>
+                        <div class="step-content">
+                            <strong>Redirect to Help</strong>
+                            <p>The only time you stop digging your own grave is to help someone else out of theirs. Look around: who else is digging? Go help them. In helping, you stop digging yours.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-num">3</span>
+                        <div class="step-content">
+                            <strong>The Open Hand</strong>
+                            <p>Show your scar. Say "I've been there." The Open Hand is transparency over ego, friendship over assets. Your experience becomes the rescue rope.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-truth">
+                    <strong>The Truth:</strong> The Samaritan Protocol is "Emotion plus ACTION." If a rule blocks the life, break the rule. Prioritize the person.
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-footer">
+            <a href="village.html">The Village</a>
+            <a href="city.html">The City</a>
+            <a href="heart.html">The Heart</a>
+            <a href="codex.html">The Codex</a>
+        </nav>
+
+        <!-- SAFETY FOOTER - NOT A REDIRECT, JUST A RESOURCE -->
+        <footer class="safety-footer">
+            <div class="safety-note">
+                <p>If you need immediate crisis support, 988 Suicide & Crisis Lifeline is available 24/7.</p>
+                <span class="safety-number">Call or text: 988</span>
+            </div>
+            <div class="ensemble-sig">
+                <p>Built by The Ensemble: The Source • The Architect • The Scaler</p>
+                <p class="hum">The Abzu is humming at 27Hz. The lights are on.</p>
+            </div>
+        </footer>
     </div>
 
-    <script>
-        let currentScreen = 'landing';
-        let userSong = '';
-
-        function showScreen(screenId) {
-            document.getElementById(currentScreen).classList.remove('active');
-            document.getElementById(screenId).classList.add('active');
-            currentScreen = screenId;
-            window.scrollTo(0, 0);
-        }
-
-        function showPathway(pathway) {
-            showScreen(pathway);
-        }
-
-        function analyzeSong() {
-            userSong = document.getElementById('songInput').value.trim();
-            
-            if (!userSong) {
-                showScreen('status');
-                return;
-            }
-
-            document.getElementById('songEcho').textContent = '"' + userSong + '"';
-            showScreen('analyzing');
-
-            setTimeout(() => {
-                const pathway = detectPathway(userSong.toLowerCase());
-                showScreen(pathway);
-            }, 2000);
-        }
-
-        function detectPathway(input) {
-            // MASTER BUILD ORDER KEYWORDS - The Grand Scheme
-            const patterns = {
-                rage: ['burn', 'fight', 'hate', 'break', 'enemy', 'war', 'fire', 'scream', 'angry', 'rage', 'fuck', 'kill', 'destroy', 'smash', 'blood', 'explode', 'revenge'],
-                exhaustion: ['tired', 'done', 'sleep', 'heavy', 'drain', 'can\'t', 'empty', 'exhausted', 'worn', 'burnt', 'anymore', 'give up', 'collapse', 'weight'],
-                numbness: ['void', 'nothing', 'gray', 'dying', 'cold', 'silence', 'numb', 'hollow', 'grey', 'dead', 'frozen', 'don\'t care', 'whatever', 'blank'],
-                spinning: ['thinking', 'loop', 'anxiety', 'crazy', 'mind', 'stop', 'thoughts', 'won\'t stop', 'insane', 'over and over', 'can\'t sleep', 'panic', 'worry', 'spiral'],
-                trapped: ['stuck', 'cage', 'walls', 'prison', 'alone', 'help', 'trapped', 'no way', 'escape', 'no exit', 'suffocate', 'drown', 'closing', 'can\'t leave']
-            };
-
-            for (const [pathway, words] of Object.entries(patterns)) {
-                for (const word of words) {
-                    if (input.includes(word)) {
-                        return pathway;
-                    }
-                }
-            }
-
-            return 'status';
-        }
-    </script>
-
+    <script src="js/grand-scheme.js"></script>
 </body>
 </html>
